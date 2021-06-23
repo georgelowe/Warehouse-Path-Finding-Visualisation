@@ -1,0 +1,69 @@
+:root {
+  --background-colour: #f3f3f3;
+  --title-colour: #000000;
+  --button-text-colour: #ffffff;
+  --info-text-colour: #ffffff;
+  --button-colour: #f64900;
+}
+
+html {
+  font-family: "Roboto", sans-serif;
+  background-color: var(--background-colour);
+}
+
+p {
+  margin: 0rem;
+}
+
+h2 {
+  margin: 0.5rem 0 1rem 0;
+}
+
+button {
+  border-style: none;
+  padding: 0.5rem;
+  margin: 0 0.5rem 0 0.5rem;
+  border-radius: 4px;
+  color: var(--button-text-colour);
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.page-container {
+  text-align: center;
+}
+
+#page-title {
+  color: var(--title-colour);
+  margin: 0rem;
+}
+
+#canvas {
+  background-color: white;
+}
+
+.control-container {
+  text-align: center;
+  margin: 1rem;
+}
+
+.config-button {
+  background-color: (var(--background-colour));
+  color: var(--title-colour);
+}
+
+.config-button:hover {
+  color: var(--button-colour);
+}
+
+.action-button {
+  background-color: var(--button-colour);
+  color: var(--button-text-colour);
+}
+
+.action-button:hover {
+  background-image: linear-gradient(45deg, #f64900, #ff4582);
+}
+
+/* .results-container {
+} */

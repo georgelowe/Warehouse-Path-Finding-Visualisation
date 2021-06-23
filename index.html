@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+    <title>Path Finding Visualisation</title>
+  </head>
+  <body>
+    <div class="page-container">
+      <h1 id="page-title">Warehouse Path Visualisation</h1>
+
+      <div class="control-container">
+        <button class="config-button" id="clear-button">Clear Board</button>
+        <button class="config-button" id="set-pick-button">
+          Set Pick Bays
+        </button>
+        <button class="action-button" id="go-button">Go!</button>
+      </div>
+
+      <canvas id="canvas" width="900px" height="500px"></canvas>
+
+      <div class="config-message-container">
+        <p id="pick-count-message">
+          There are currently 0 items selected to pick
+        </p>
+      </div>
+
+      <div class="results-container">
+        <h2>Results</h2>
+        <p id="results-message"></p>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
