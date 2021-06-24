@@ -35,7 +35,7 @@ button {
 
 #page-title {
   color: var(--title-colour);
-  margin: 0rem;
+  margin: 0;
 }
 
 #canvas {

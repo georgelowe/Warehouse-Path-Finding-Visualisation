@@ -11,18 +11,18 @@ var pickColour = "#f64900";
 var rackColour = "#dbdbdb";
 
 // Tiles
-var canvas;
-var ctx;
+var canvas = document.getElementById("canvas");
+ctx = canvas.getContext("2d");
 var numColumns = 45;
 var numRows = 25;
-var tileWidth = 20;
-var tileHeight = 20;
+var tileDim = 20;
 
 // Event Listeners
 clearButton.addEventListener(
   "click",
   function () {
     window.alert("Clear button clicked");
+    console.log(tileArray);
   },
   false
 );
@@ -48,20 +48,12 @@ var tileArray = [];
 for (let i = 0; i < numColumns; i++) {
   tileArray[i] = [];
   for (let j = 0; j < numRows; j++) {
-    tileArray[i][j] = new Tile(i * (20 + 1), j * (20 + 1));
+    tileArray[i][j] = new Tile(i * (tileDim + 2), j * (tileDim + 2));
   }
 }
-
+// Config start and end points
 tileArray[0][0].setStatus("start");
-
-// RE CONFIGURE HEIGHT AND WIDTHS
-tileArray[42][23].setStatus("start");
-
-function configure() {
-  canvas = document.getElementById("canvas");
-  ctx = canvas.getContext("2d");
-  populateGrid();
-}
+tileArray[numColumns - 1][numRows - 1].setStatus("end");
 
 // Populate grid with tiles from tileArray
 function populateGrid() {
@@ -73,13 +65,41 @@ function populateGrid() {
 }
 
 function drawTile(x, y, state) {
-  console.log("drawing ");
+  deleteTile(x + 1, y + 1);
   ctx.fillStyle = state;
   ctx.beginPath();
-  ctx.rect(x, y, 20, 20);
+  ctx.rect(x + 1, y + 1, 20, 20);
   ctx.closePath();
   ctx.fill();
 }
+
+function deleteTile(x, y) {
+  ctx.clearRect(x, y, tileDim, tileDim);
+}
+
+// check which mode we are in: i.e. selecting racking or selecting pick items
+function selectTile(e) {
+  let xCoord = e.pageX - canvas.offsetLeft;
+  let yCoord = e.pageY - canvas.offsetTop;
+
+  for (let i = 0; i < numColumns; i++) {
+    for (let j = 0; j < numRows; j++) {
+      if (
+        i * (tileDim + 1) < xCoord &&
+        xCoord < i * (tileDim + 1) + tileDim &&
+        j * (tileDim + 1) < yCoord &&
+        yCoord < j * (tileDim + 1) + tileDim
+      ) {
+        tileArray[i][j].setStatus("start");
+        drawTile(i * (tileDim + 2), j * (tileDim + 2), "start");
+        console.log("i is: " + i + "\nj is: " + j);
+        console.log("xCoord is: " + xCoord + "\nyCoord is: " + yCoord);
+      }
+    }
+  }
+}
+
+canvas.onmousedown = selectTile;
 
 // Calculate the path between two points
 // @param firstPoint, secondPoint, algorithm
@@ -91,4 +111,4 @@ function calculateCost() {}
 // @return
 function calculateBestRoute() {}
 
-configure();
+populateGrid();
