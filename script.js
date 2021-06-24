@@ -2,7 +2,7 @@
 var clearButton = document.getElementById("clear-button");
 var setPickButton = document.getElementById("set-pick-button");
 var goButton = document.getElementById("go-button");
-var configMessage = document.getElementById("config-message-container");
+var pickCountMessage = document.getElementById("pick-count-message-container");
 var resultsMessage = document.getElementById("results-container");
 
 // Tiles
@@ -16,6 +16,18 @@ var tileDim = 20;
 // Selection Mode Handling
 var selectionMode = "rackingMode";
 var pickCount = 0;
+var labelMap = {
+  1: "A",
+  2: "B",
+  3: "C",
+  4: "D",
+  5: "E",
+  6: "F",
+  7: "G",
+  8: "H",
+  9: "I",
+  10: "J",
+};
 
 // Event Listeners
 clearButton.addEventListener(
@@ -40,10 +52,25 @@ setPickButton.addEventListener(
   false
 );
 
-goButton.addEventListener("click", function () {}, false);
+goButton.addEventListener(
+  "click",
+  function () {
+    // if (pickCount > 0) {
+    //   for (let i = 0; i < pickCount; i++) {
+    //     solve("start", labelMap[i + 1]);
+    //   }
+    // } else {
+    //   pickCountMessage.textContent =
+    //     "You must select at least one item to be picked";
+    // }
+
+    // DELETE THIS AFTER CONFIGURING ALG
+    solve("start", "A");
+  },
+  false
+);
 
 // Populate tileArray of tile objects
-
 for (let i = 0; i < numColumns; i++) {
   tileArray[i] = [];
   for (let j = 0; j < numRows; j++) {
@@ -53,8 +80,8 @@ for (let i = 0; i < numColumns; i++) {
 configDefaultTiles();
 
 function configDefaultTiles() {
-  // Config start and end points
   tileArray[0][0].setStatus("start");
+  tileArray[0][0].setLabel("start");
   tileArray[numColumns - 1][numRows - 1].setStatus("end");
 }
 
@@ -80,19 +107,22 @@ function clearGrid() {
 }
 
 function drawTile(x, y, state) {
-  deleteTile(x + 1, y + 1);
   ctx.fillStyle = state;
   ctx.beginPath();
   ctx.rect(x, y, 20, 20);
   ctx.closePath();
   ctx.fill();
+
+  // label tile if it is a pick item
+  if (state == "#f64900") {
+    ctx.font = "10pt Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText(labelMap[pickCount], x + 10, y + 10);
+  }
 }
 
-function deleteTile(x, y) {
-  ctx.clearRect(x, y, tileDim, tileDim);
-}
-
-// check which mode we are in: i.e. selecting racking or selecting pick items
 function selectTile(e) {
   let xCoord = e.pageX - canvas.offsetLeft;
   let yCoord = e.pageY - canvas.offsetTop;
@@ -116,8 +146,11 @@ function selectTile(e) {
             tileArray[i][j].setStatus("racking");
           } else if ((selectionMode = "pickingMode")) {
             if (tileArray[i][j].status != "pick") {
-              tileArray[i][j].setStatus("pick");
-              pickCount++;
+              if (pickCount < 10) {
+                tileArray[i][j].setStatus("pick");
+                tileArray[i][j].setLabel("" + labelMap[pickCount + 1]);
+                pickCount++;
+              }
             }
           }
 
@@ -135,7 +168,7 @@ function selectTile(e) {
 }
 
 function updatePickCountMessage() {
-  configMessage.textContent =
+  pickCountMessage.textContent =
     "There are currently " + pickCount + " items selected to pick";
 }
 
@@ -152,3 +185,8 @@ function calculateCost() {}
 function calculateBestRoute() {}
 
 populateGrid();
+
+// Solve between two points
+function solve(firstLabel, secondLabel) {
+  console.log("first is: " + firstLabel + "\nsecond is: " + secondLabel);
+}

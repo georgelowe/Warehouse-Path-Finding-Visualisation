@@ -4,6 +4,7 @@ class Tile {
     this.y = y;
     this.status = "empty";
     this.colour = "#dbdbdb";
+    this.label = "null";
   }
 
   setStatus(status) {
@@ -19,5 +20,9 @@ class Tile {
     } else if (status == "end") {
       this.colour = "#960000";
     }
+  }
+
+  setLabel(label) {
+    this.label = label;
   }
 }

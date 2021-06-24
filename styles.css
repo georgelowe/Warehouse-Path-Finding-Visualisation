@@ -65,5 +65,9 @@ button {
   background-image: linear-gradient(45deg, #f64900, #ff4582);
 }
 
+#pick-count-message-container {
+  margin-bottom: 1rem;
+}
+
 /* .results-container {
 } */
