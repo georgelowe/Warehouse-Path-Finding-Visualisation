@@ -21,6 +21,9 @@
         <button class="config-button" id="set-pick-button">
           Set Pick Bays
         </button>
+        <button class="config-button" id="generate-map-button">
+          Generate Random Map
+        </button>
         <button class="action-button" id="go-button">Go!</button>
       </div>
 
@@ -34,9 +37,24 @@
 
       <div class="results-container">
         <h2>Results</h2>
-        <p id="results-message"></p>
+        <p id="results-message">
+          Start to Item A: 10 steps
+          <br />
+          Start to Item B: 12 steps
+          <br />
+          Start to Item C: 6 steps
+          <br />
+          Item A to Item B: 5 steps
+          <br />
+          Item A to Item C: 3 steps
+          <br />
+          Item B to Item C: 16 steps
+          <br /><br />
+          Optimal Pick Route: A to C to B
+        </p>
       </div>
     </div>
+    <script src="tile.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
