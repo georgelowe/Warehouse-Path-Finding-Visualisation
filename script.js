@@ -13,7 +13,7 @@ var rackColour = "#dbdbdb";
 // Tiles
 var canvas = document.getElementById("canvas");
 ctx = canvas.getContext("2d");
-var numColumns = 45;
+var numColumns = 40;
 var numRows = 25;
 var tileDim = 20;
 
@@ -48,7 +48,7 @@ var tileArray = [];
 for (let i = 0; i < numColumns; i++) {
   tileArray[i] = [];
   for (let j = 0; j < numRows; j++) {
-    tileArray[i][j] = new Tile(i * (tileDim + 2), j * (tileDim + 2));
+    tileArray[i][j] = new Tile(i * (tileDim + 3), j * (tileDim + 3));
   }
 }
 // Config start and end points
@@ -59,6 +59,7 @@ tileArray[numColumns - 1][numRows - 1].setStatus("end");
 function populateGrid() {
   for (let i = 0; i < numColumns; i++) {
     for (let j = 0; j < numRows; j++) {
+      console.log("x at " + i + "," + j + " is: " + tileArray[i][j].x);
       drawTile(tileArray[i][j].x, tileArray[i][j].y, tileArray[i][j].colour);
     }
   }
@@ -68,7 +69,7 @@ function drawTile(x, y, state) {
   deleteTile(x + 1, y + 1);
   ctx.fillStyle = state;
   ctx.beginPath();
-  ctx.rect(x + 1, y + 1, 20, 20);
+  ctx.rect(x, y, 20, 20);
   ctx.closePath();
   ctx.fill();
 }
@@ -85,13 +86,13 @@ function selectTile(e) {
   for (let i = 0; i < numColumns; i++) {
     for (let j = 0; j < numRows; j++) {
       if (
-        i * (tileDim + 1) < xCoord &&
-        xCoord < i * (tileDim + 1) + tileDim &&
-        j * (tileDim + 1) < yCoord &&
-        yCoord < j * (tileDim + 1) + tileDim
+        i * (tileDim + 3) < xCoord &&
+        xCoord < i * (tileDim + 3) + tileDim &&
+        j * (tileDim + 3) < yCoord &&
+        yCoord < j * (tileDim + 3) + tileDim
       ) {
         tileArray[i][j].setStatus("start");
-        drawTile(i * (tileDim + 2), j * (tileDim + 2), "start");
+        drawTile(i * (tileDim + 3), j * (tileDim + 3), "start");
         console.log("i is: " + i + "\nj is: " + j);
         console.log("xCoord is: " + xCoord + "\nyCoord is: " + yCoord);
       }
