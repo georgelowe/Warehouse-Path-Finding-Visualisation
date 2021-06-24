@@ -13,7 +13,7 @@ class Tile {
     } else if (status == "empty") {
       this.colour = "#dbdbdb";
     } else if (status == "racking") {
-      this.colour = "#000000";
+      this.colour = "#736BA6";
     } else if (status == "pick") {
       this.colour = "#f64900";
     } else if (status == "end") {

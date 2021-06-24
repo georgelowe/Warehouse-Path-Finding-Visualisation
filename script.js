@@ -5,24 +5,23 @@ var goButton = document.getElementById("go-button");
 var configMessage = document.getElementById("config-message-container");
 var resultsMessage = document.getElementById("results-container");
 
-// Colours
-var startColour = "#0B9F00";
-var pickColour = "#f64900";
-var rackColour = "#dbdbdb";
-
 // Tiles
 var canvas = document.getElementById("canvas");
 ctx = canvas.getContext("2d");
+var tileArray = [];
 var numColumns = 40;
 var numRows = 25;
 var tileDim = 20;
+
+// Selection Mode Handling
+var selectionMode = "rackingMode";
+var pickCount = 0;
 
 // Event Listeners
 clearButton.addEventListener(
   "click",
   function () {
-    window.alert("Clear button clicked");
-    console.log(tileArray);
+    clearGrid();
   },
   false
 );
@@ -30,39 +29,54 @@ clearButton.addEventListener(
 setPickButton.addEventListener(
   "click",
   function () {
-    window.alert("Set pick button clicked");
+    if (selectionMode == "rackingMode") {
+      setPickButton.textContent = "Set Racking";
+      selectionMode = "pickingMode";
+    } else if (selectionMode == "pickingMode") {
+      setPickButton.textContent = "Set Pick Bays";
+      selectionMode = "rackingMode";
+    }
   },
   false
 );
 
-goButton.addEventListener(
-  "click",
-  function () {
-    window.alert("Go button clicked");
-  },
-  false
-);
+goButton.addEventListener("click", function () {}, false);
 
 // Populate tileArray of tile objects
-var tileArray = [];
+
 for (let i = 0; i < numColumns; i++) {
   tileArray[i] = [];
   for (let j = 0; j < numRows; j++) {
     tileArray[i][j] = new Tile(i * (tileDim + 3), j * (tileDim + 3));
   }
 }
-// Config start and end points
-tileArray[0][0].setStatus("start");
-tileArray[numColumns - 1][numRows - 1].setStatus("end");
+configDefaultTiles();
+
+function configDefaultTiles() {
+  // Config start and end points
+  tileArray[0][0].setStatus("start");
+  tileArray[numColumns - 1][numRows - 1].setStatus("end");
+}
 
 // Populate grid with tiles from tileArray
 function populateGrid() {
+  configDefaultTiles();
   for (let i = 0; i < numColumns; i++) {
     for (let j = 0; j < numRows; j++) {
-      console.log("x at " + i + "," + j + " is: " + tileArray[i][j].x);
       drawTile(tileArray[i][j].x, tileArray[i][j].y, tileArray[i][j].colour);
     }
   }
+}
+
+function clearGrid() {
+  pickCount = 0;
+  updatePickCountMessage();
+  for (let i = 0; i < numColumns; i++) {
+    for (let j = 0; j < numRows; j++) {
+      tileArray[i][j].setStatus("empty");
+    }
+  }
+  populateGrid();
 }
 
 function drawTile(x, y, state) {
@@ -91,13 +105,38 @@ function selectTile(e) {
         j * (tileDim + 3) < yCoord &&
         yCoord < j * (tileDim + 3) + tileDim
       ) {
-        tileArray[i][j].setStatus("start");
-        drawTile(i * (tileDim + 3), j * (tileDim + 3), "start");
-        console.log("i is: " + i + "\nj is: " + j);
-        console.log("xCoord is: " + xCoord + "\nyCoord is: " + yCoord);
+        if (
+          tileArray[i][j].status != "start" &&
+          tileArray[i][j].status != "end"
+        ) {
+          if (selectionMode == "rackingMode") {
+            if (tileArray[i][j].status == "pick") {
+              pickCount--;
+            }
+            tileArray[i][j].setStatus("racking");
+          } else if ((selectionMode = "pickingMode")) {
+            if (tileArray[i][j].status != "pick") {
+              tileArray[i][j].setStatus("pick");
+              pickCount++;
+            }
+          }
+
+          updatePickCountMessage();
+
+          drawTile(
+            i * (tileDim + 3),
+            j * (tileDim + 3),
+            tileArray[i][j].colour
+          );
+        }
       }
     }
   }
+}
+
+function updatePickCountMessage() {
+  configMessage.textContent =
+    "There are currently " + pickCount + " items selected to pick";
 }
 
 canvas.onmousedown = selectTile;
