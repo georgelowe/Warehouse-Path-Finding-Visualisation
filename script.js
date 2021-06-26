@@ -55,17 +55,12 @@ setPickButton.addEventListener(
 goButton.addEventListener(
   "click",
   function () {
-    // if (pickCount > 0) {
-    //   for (let i = 0; i < pickCount; i++) {
-    //     solve("start", labelMap[i + 1]);
-    //   }
-    // } else {
-    //   pickCountMessage.textContent =
-    //     "You must select at least one item to be picked";
-    // }
-
-    // DELETE THIS AFTER CONFIGURING ALG
-    solve("start", "A");
+    if (pickCount > 0) {
+      console.log(solveUnweighted("A", tileArray));
+    } else {
+      pickCountMessage.textContent =
+        "You must select at least one item to be picked";
+    }
   },
   false
 );
@@ -78,14 +73,14 @@ for (let i = 0; i < numColumns; i++) {
   }
 }
 configDefaultTiles();
+populateGrid();
 
 function configDefaultTiles() {
   tileArray[0][0].setStatus("start");
-  tileArray[0][0].setLabel("start");
   tileArray[numColumns - 1][numRows - 1].setStatus("end");
 }
 
-// Populate grid with tiles from tileArray
+// Populate canvas with grid of tiles
 function populateGrid() {
   configDefaultTiles();
   for (let i = 0; i < numColumns; i++) {
@@ -106,22 +101,33 @@ function clearGrid() {
   populateGrid();
 }
 
-function drawTile(x, y, state) {
-  ctx.fillStyle = state;
+function drawTile(tileXPos, tileYPos, tileColour) {
+  ctx.fillStyle = tileColour;
   ctx.beginPath();
-  ctx.rect(x, y, 20, 20);
+  ctx.rect(tileXPos, tileYPos, 20, 20);
   ctx.closePath();
   ctx.fill();
 
   // label tile if it is a pick item
-  if (state == "#f64900") {
-    ctx.font = "10pt Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#ffffff";
-    ctx.fillText(labelMap[pickCount], x + 10, y + 10);
+  if (tileColour == "#f64900") {
+    labelTile(ctx, labelMap[pickCount], tileXPos, tileYPos);
   }
 }
+
+function updatePickCountMessage() {
+  pickCountMessage.textContent =
+    "There are currently " + pickCount + " items selected to pick";
+}
+
+function labelTile(ctx, text, tileXPos, tileYPos) {
+  ctx.font = "10pt Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText(text, tileXPos + 10, tileYPos + 10);
+}
+
+canvas.onmousedown = selectTile;
 
 function selectTile(e) {
   let xCoord = e.pageX - canvas.offsetLeft;
@@ -165,28 +171,4 @@ function selectTile(e) {
       }
     }
   }
-}
-
-function updatePickCountMessage() {
-  pickCountMessage.textContent =
-    "There are currently " + pickCount + " items selected to pick";
-}
-
-canvas.onmousedown = selectTile;
-
-// Calculate the path between two points
-// @param firstPoint, secondPoint, algorithm
-// @return cost
-function calculateCost() {}
-
-// Calculate the most efficient route
-// @param
-// @return
-function calculateBestRoute() {}
-
-populateGrid();
-
-// Solve between two points
-function solve(firstLabel, secondLabel) {
-  console.log("first is: " + firstLabel + "\nsecond is: " + secondLabel);
 }
