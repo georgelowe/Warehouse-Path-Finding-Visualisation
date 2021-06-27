@@ -2,6 +2,7 @@
 var clearButton = document.getElementById("clear-button");
 var setPickButton = document.getElementById("set-pick-button");
 var goButton = document.getElementById("go-button");
+var generateMapButton = document.getElementById("generate-map-button");
 var pickCountMessage = document.getElementById("pick-count-message-container");
 var resultsMessage = document.getElementById("results-container");
 
@@ -14,7 +15,7 @@ var numRows = 25;
 var tileDim = 20;
 
 // Selection Mode Handling
-var selectionMode = "rackingMode";
+var selectionMode = "rackSelect";
 var pickCount = 0;
 var labelMap = {
   1: "A",
@@ -41,12 +42,12 @@ clearButton.addEventListener(
 setPickButton.addEventListener(
   "click",
   function () {
-    if (selectionMode == "rackingMode") {
+    if (selectionMode == "rackSelect") {
       setPickButton.textContent = "Set Racking";
-      selectionMode = "pickingMode";
-    } else if (selectionMode == "pickingMode") {
+      selectionMode = "pickSelect";
+    } else if (selectionMode == "pickSelect") {
       setPickButton.textContent = "Set Pick Bays";
-      selectionMode = "rackingMode";
+      selectionMode = "rackSelect";
     }
   },
   false
@@ -66,6 +67,22 @@ goButton.addEventListener(
   false
 );
 
+generateMapButton.addEventListener(
+  "click",
+  function () {
+    if (pickCount > 0) {
+      var startCoords = [0, 0];
+      console.log(solveUnweighted(tileArray, startCoords, "B"));
+    } else {
+      pickCountMessage.textContent =
+        "You must select at least one item to be picked";
+    }
+  },
+  false
+);
+
+generateMapButton.addEventListener("click", function () {}, false);
+
 // Populate tileArray of tile objects
 for (let i = 0; i < numColumns; i++) {
   tileArray[i] = [];
@@ -78,7 +95,9 @@ populateGrid();
 
 function configDefaultTiles() {
   tileArray[0][0].setStatus("start");
+  tileArray[0][0].lock();
   tileArray[numColumns - 1][numRows - 1].setStatus("end");
+  tileArray[numColumns - 1][numRows - 1].lock();
 }
 
 // Populate canvas with grid of tiles
@@ -111,7 +130,7 @@ function drawTile(tileXPos, tileYPos, tileColour) {
 
   // label tile if it is a pick item
   if (tileColour == "#f64900") {
-    labelTile(ctx, labelMap[pickCount], tileXPos, tileYPos);
+    displayLabel(ctx, labelMap[pickCount], tileXPos, tileYPos);
   }
 }
 
@@ -120,12 +139,12 @@ function updatePickCountMessage() {
     "There are currently " + pickCount + " items selected to pick";
 }
 
-function labelTile(ctx, text, tileXPos, tileYPos) {
+function displayLabel(ctx, text, tileXPos, tileYPos) {
   ctx.font = "10pt Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillStyle = "#ffffff";
-  ctx.fillText(text, tileXPos + 10, tileYPos + 10);
+  ctx.fillText(text, tileXPos + tileDim / 2, tileYPos + tileDim / 2);
 }
 
 canvas.onmousedown = selectTile;
@@ -142,26 +161,23 @@ function selectTile(e) {
         j * (tileDim + 3) < yCoord &&
         yCoord < j * (tileDim + 3) + tileDim
       ) {
-        if (
-          tileArray[i][j].status != "start" &&
-          tileArray[i][j].status != "end"
-        ) {
-          if (selectionMode == "rackingMode") {
+        if (tileArray[i][j].isClickable) {
+          if (selectionMode == "rackSelect") {
             if (tileArray[i][j].status == "pick") {
               pickCount--;
+              updatePickCountMessage();
             }
             tileArray[i][j].setStatus("racking");
-          } else if ((selectionMode = "pickingMode")) {
-            if (tileArray[i][j].status != "pick") {
-              if (pickCount < 10) {
-                tileArray[i][j].setStatus("pick");
-                tileArray[i][j].setLabel("" + labelMap[pickCount + 1]);
-                pickCount++;
-              }
-            }
+          } else if (
+            (selectionMode = "pickSelect") &&
+            tileArray[i][j].status != "pick" &&
+            pickCount < 10
+          ) {
+            tileArray[i][j].setStatus("pick");
+            tileArray[i][j].setLabel("" + labelMap[pickCount + 1]);
+            pickCount++;
+            updatePickCountMessage();
           }
-
-          updatePickCountMessage();
 
           drawTile(
             i * (tileDim + 3),

@@ -22,6 +22,7 @@ function visualise(path, startCoords) {
 
     if (tileArray[currentX][currentY].status.length > "start".length) {
       tileArray[currentX][currentY].setStatus("x");
+
       stepCount++;
       drawTile(
         currentX * (tileDim + 3),
@@ -30,5 +31,21 @@ function visualise(path, startCoords) {
       );
     }
   }
+  resetEmptyTiles();
+
   return stepCount;
+}
+
+function resetEmptyTiles() {
+  for (let i = 0; i < numColumns; i++) {
+    for (let j = 0; j < numRows; j++) {
+      if (
+        (tileArray[i][j].status.includes("start") &&
+          tileArray[i][j].status.length > "start".length) ||
+        tileArray[i][j].status == "x"
+      ) {
+        tileArray[i][j].setStatus("empty");
+      }
+    }
+  }
 }

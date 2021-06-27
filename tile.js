@@ -6,6 +6,8 @@ class Tile {
     this.colour = "#dbdbdb";
     this.label = "";
     this.distance;
+    this.isClickable = true;
+    this.path = "";
   }
 
   setStatus(status) {
@@ -39,5 +41,17 @@ class Tile {
 
   setDistance(distance) {
     this.distance = distance;
+  }
+
+  lock() {
+    if (this.clickable) {
+      this.clickable = false;
+    }
+  }
+
+  unlock() {
+    if (!this.clickable) {
+      this.clickable = true;
+    }
   }
 }
