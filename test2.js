@@ -98,6 +98,6 @@ hash["BE"] = 18;
 hash["CE"] = 7;
 hash["DE"] = 4;
 
-var string = "ABC";
+var string = "ABCDE";
 var reducedPermutations = reducePermutations(string);
 myFunc(reducedPermutations);
