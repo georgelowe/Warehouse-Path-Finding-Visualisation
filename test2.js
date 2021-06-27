@@ -55,16 +55,31 @@ function myFunc(routes) {
       if (i == key.length - 2) {
         console.log("Route " + key + " has a score of " + count);
 
-        if (count < lowestCount) {
-          lowestCount = count;
-          bestRoute = key;
+        for (let i = 0; i < 2; i++) {
+          var updatedCount = count + hash[key[i * (key.length - 1)]];
+
+          var path = "" + key;
+
+          if (i == 1) {
+            path = path.split("").reverse().join("");
+          }
+
+          console.log(
+            "Route: Start->" + path + " has a score of " + updatedCount
+          );
+          if (updatedCount < lowestCount) {
+            lowestCount = updatedCount;
+            bestRoute = path;
+          }
         }
       }
     }
 
     count = 0;
   });
-  console.log("Lowest count is " + lowestCount + " with route " + bestRoute);
+  console.log(
+    "Lowest count is " + lowestCount + " with route: start-> " + bestRoute
+  );
 }
 
 var hash = {};
@@ -78,6 +93,10 @@ hash["AD"] = 16;
 hash["BC"] = 1;
 hash["BD"] = 10;
 hash["CD"] = 11;
+hash["AE"] = 13;
+hash["BE"] = 18;
+hash["CE"] = 7;
+hash["DE"] = 4;
 
 var string = "ABC";
 var reducedPermutations = reducePermutations(string);
