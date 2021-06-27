@@ -57,8 +57,7 @@ goButton.addEventListener(
   "click",
   function () {
     if (pickCount > 0) {
-      var startCoords = [0, 0];
-      console.log(solveUnweighted(tileArray, startCoords, "A"));
+      console.log(solveUnweighted(tileArray, "start", "A"));
     } else {
       pickCountMessage.textContent =
         "You must select at least one item to be picked";
@@ -71,8 +70,7 @@ generateMapButton.addEventListener(
   "click",
   function () {
     if (pickCount > 0) {
-      var startCoords = [0, 0];
-      console.log(solveUnweighted(tileArray, startCoords, "B"));
+      console.log(solveUnweighted(tileArray, "A", "B"));
     } else {
       pickCountMessage.textContent =
         "You must select at least one item to be picked";
@@ -96,7 +94,7 @@ populateGrid();
 function configDefaultTiles() {
   tileArray[0][0].setStatus("start");
   tileArray[0][0].lock();
-  tileArray[numColumns - 1][numRows - 1].setStatus("end");
+  tileArray[numColumns - 1][numRows - 1].setStatus("X");
   tileArray[numColumns - 1][numRows - 1].lock();
 }
 

@@ -1,4 +1,5 @@
-function solveUnweighted(tileArray, startCoords, endLabel) {
+function solveUnweighted(tileArray, startLabel, endLabel) {
+  var startCoords = findStartCoords(startLabel);
   var xQueue = [startCoords[0]];
   var yQueue = [startCoords[1]];
   var currentX;
@@ -73,5 +74,18 @@ function solveUnweighted(tileArray, startCoords, endLabel) {
   } else {
     pickCountMessage.textContent = "There is no route to the picking item";
     return null;
+  }
+}
+
+function findStartCoords(label) {
+  for (let i = 0; i < numColumns; i++) {
+    for (let j = 0; j < numRows; j++) {
+      if (tileArray[i][j].label == label) {
+        console.log(label);
+        console.log("coords are: " + i + " and " + j);
+        var startCoords = [i, j];
+        return startCoords;
+      }
+    }
   }
 }

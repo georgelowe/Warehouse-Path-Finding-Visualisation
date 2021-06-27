@@ -23,19 +23,19 @@ function test(pickCount) {
       if (i + j < string.length) {
         let res = string[i] + "" + string[i + j];
         console.log(res);
-        solve(string[i], string[i + j]);
+
+        if (!hash[res]) {
+          hash[res] = solve(string[i], string[i + j]);
+        }
       }
     }
   }
-
-  if (!hash[string]) {
-  }
-  if (hash[string]) {
-  }
+  console.log(hash);
 }
 
 function solve(start, end) {
   console.log("Route from " + start + " to " + end);
+  return 10;
 }
 
 var pickCount = 4;
