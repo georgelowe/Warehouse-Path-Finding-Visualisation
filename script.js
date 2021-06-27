@@ -4,7 +4,7 @@ var setPickButton = document.getElementById("set-pick-button");
 var goButton = document.getElementById("go-button");
 var generateMapButton = document.getElementById("generate-map-button");
 var pickCountMessage = document.getElementById("pick-count-message-container");
-var resultsMessage = document.getElementById("results-container");
+var resultsMessage = document.getElementById("results-message");
 
 // Tiles
 var canvas = document.getElementById("canvas");
@@ -56,10 +56,11 @@ setPickButton.addEventListener(
 goButton.addEventListener(
   "click",
   function () {
+    var emptyHash = {};
     if (pickCount > 0) {
-      console.log(solveUnweighted(tileArray, "start", "A"));
-      console.log(solveUnweighted(tileArray, "A", "B"));
-      console.log(solveUnweighted(tileArray, "start", "B"));
+      var innerEdges = findInnerEdgeLengths(emptyHash);
+      var allEdges = findEdgesFromStart(innerEdges);
+      displayEdgeResults(allEdges);
     } else {
       pickCountMessage.textContent =
         "You must select at least one item to be picked";
@@ -67,6 +68,13 @@ goButton.addEventListener(
   },
   false
 );
+
+function displayEdgeResults(resultsHash) {
+  Object.keys(resultsHash).forEach(function (key) {
+    var value = resultsHash[key];
+    console.log(key + ":" + value);
+  });
+}
 
 generateMapButton.addEventListener(
   "click",
@@ -188,4 +196,34 @@ function selectTile(e) {
       }
     }
   }
+}
+
+function findInnerEdgeLengths(hash) {
+  var string = "";
+
+  for (let i = 1; i < pickCount + 1; i++) {
+    string = string + labelMap[i];
+  }
+
+  for (let i = 0; i < string.length - 1; i++) {
+    for (let j = 1; j < string.length; j++) {
+      if (i + j < string.length) {
+        let res = string[i] + "" + string[i + j];
+
+        if (!hash[res]) {
+          hash[res] = solveUnweighted(tileArray, string[i], string[i + j]);
+        }
+      }
+    }
+  }
+  return hash;
+}
+
+function findEdgesFromStart(hash) {
+  for (let i = 1; i < pickCount + 1; i++) {
+    if (!hash[labelMap[i]]) {
+      hash[labelMap[i]] = solveUnweighted(tileArray, "start", labelMap[i]);
+    }
+  }
+  return hash;
 }
