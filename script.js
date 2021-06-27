@@ -61,6 +61,7 @@ goButton.addEventListener(
       var innerEdges = findInnerEdgeLengths(emptyHash);
       var allEdges = findEdgesFromStart(innerEdges);
       displayEdgeResults(allEdges);
+      console.log(allEdges);
     } else {
       pickCountMessage.textContent =
         "You must select at least one item to be picked";
@@ -76,18 +77,7 @@ function displayEdgeResults(resultsHash) {
   });
 }
 
-generateMapButton.addEventListener(
-  "click",
-  function () {
-    if (pickCount > 0) {
-      console.log(solveUnweighted(tileArray, "A", "B"));
-    } else {
-      pickCountMessage.textContent =
-        "You must select at least one item to be picked";
-    }
-  },
-  false
-);
+generateMapButton.addEventListener("click", function () {}, false);
 
 generateMapButton.addEventListener("click", function () {}, false);
 

@@ -34,13 +34,51 @@ function reducePermutations(string) {
   return permutationsHash;
 }
 
-function myFunc(p) {
-  Object.keys(p).forEach(function (key) {
-    console.log(key);
+function myFunc(routes) {
+  console.log(routes);
+  var count = 0;
+  var lowestCount = 999;
+  var bestRoute = "";
+  var resultsArr = [];
+
+  Object.keys(routes).forEach(function (key) {
+    console.log("\nKey is " + key);
+
+    for (let i = 0; i < key.length - 1; i++) {
+      var newKey = key[i] + "" + key[i + 1];
+      var sortedNewKey = newKey.split("").sort().join("");
+
+      console.log("Sorted key is: " + sortedNewKey);
+
+      count = count + hash[sortedNewKey];
+
+      if (i == key.length - 2) {
+        console.log("Route " + key + " has a score of " + count);
+
+        if (count < lowestCount) {
+          lowestCount = count;
+          bestRoute = key;
+        }
+      }
+    }
+
+    count = 0;
   });
+  console.log("Lowest count is " + lowestCount + " with route " + bestRoute);
 }
+
+var hash = {};
+hash["A"] = 10;
+hash["B"] = 6;
+hash["C"] = 21;
+hash["D"] = 4;
+hash["AB"] = 11;
+hash["AC"] = 8;
+hash["AD"] = 16;
+hash["BC"] = 1;
+hash["BD"] = 10;
+hash["CD"] = 11;
 
 var string = "ABC";
 var reducedPermutations = reducePermutations(string);
-
 myFunc(reducedPermutations);
