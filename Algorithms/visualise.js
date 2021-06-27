@@ -20,15 +20,16 @@ function visualise(path, startCoords) {
       currentX -= 1;
     }
 
-    if (tileArray[currentX][currentY].status.length > "start".length) {
-      tileArray[currentX][currentY].setStatus("x");
-
-      stepCount++;
-      drawTile(
-        currentX * (tileDim + 3),
-        currentY * (tileDim + 3),
-        tileArray[currentX][currentY].colour
-      );
+    if (tileArray[currentX][currentY].status.length > "pick".length) {
+      if (tileArray[currentX][currentY].status != "start") {
+        tileArray[currentX][currentY].setStatus("x");
+        stepCount++;
+        drawTile(
+          currentX * (tileDim + 3),
+          currentY * (tileDim + 3),
+          tileArray[currentX][currentY].colour
+        );
+      }
     }
   }
   resetEmptyTiles();
@@ -40,10 +41,16 @@ function resetEmptyTiles() {
   for (let i = 0; i < numColumns; i++) {
     for (let j = 0; j < numRows; j++) {
       if (
-        (tileArray[i][j].status.includes("start") &&
-          tileArray[i][j].status.length > "start".length) ||
-        tileArray[i][j].status == "x"
+        tileArray[i][j].status.includes("start") &&
+        tileArray[i][j].status.length > "start".length
       ) {
+        tileArray[i][j].setStatus("empty");
+      } else if (
+        tileArray[i][j].status.includes("pick") &&
+        tileArray[i][j].status.length > "pick".length
+      ) {
+        tileArray[i][j].setStatus("empty");
+      } else if (tileArray[i][j].status == "x") {
         tileArray[i][j].setStatus("empty");
       }
     }
