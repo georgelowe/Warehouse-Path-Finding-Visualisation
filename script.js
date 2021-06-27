@@ -56,7 +56,8 @@ goButton.addEventListener(
   "click",
   function () {
     if (pickCount > 0) {
-      console.log(solveUnweighted("A", tileArray));
+      var startCoords = [0, 0];
+      console.log(solveUnweighted(tileArray, startCoords, "A"));
     } else {
       pickCountMessage.textContent =
         "You must select at least one item to be picked";

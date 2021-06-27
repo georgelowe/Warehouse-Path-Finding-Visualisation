@@ -1,7 +1,7 @@
-function visualise(path, stepCount) {
+function visualise(path, startCoords) {
   var pathLength = path.length;
-  var currentX = 0;
-  var currentY = 0;
+  var currentX = startCoords[0];
+  var currentY = startCoords[1];
   var stepCount = 0;
 
   for (var i = 0; i < pathLength - 1; i++) {

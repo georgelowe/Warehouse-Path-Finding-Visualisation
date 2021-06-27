@@ -1,6 +1,6 @@
-function solveUnweighted(label, tileArray) {
-  var xQueue = [0];
-  var yQueue = [0];
+function solveUnweighted(tileArray, startCoords, endLabel) {
+  var xQueue = [startCoords[0]];
+  var yQueue = [startCoords[1]];
   var currentX;
   var currentY;
   var pathFound = false;
@@ -10,21 +10,21 @@ function solveUnweighted(label, tileArray) {
     currentY = yQueue.shift();
 
     // Check that the desired "label" has been found
-    if (currentX > 0 && tileArray[currentX - 1][currentY].label == label) {
+    if (currentX > 0 && tileArray[currentX - 1][currentY].label == endLabel) {
       pathFound = true;
     }
     if (
       currentX < numColumns - 1 &&
-      tileArray[currentX + 1][currentY].label == label
+      tileArray[currentX + 1][currentY].label == endLabel
     ) {
       pathFound = true;
     }
-    if (currentY > 0 && tileArray[currentX][currentY - 1].label == label) {
+    if (currentY > 0 && tileArray[currentX][currentY - 1].label == endLabel) {
       pathFound = true;
     }
     if (
       currentY < numRows - 1 &&
-      tileArray[currentX][currentY + 1].label == label
+      tileArray[currentX][currentY + 1].label == endLabel
     ) {
       pathFound = true;
     }
@@ -69,7 +69,7 @@ function solveUnweighted(label, tileArray) {
   if (pathFound) {
     pickCountMessage.textContent = "Pick route found successfully";
     var path = tileArray[currentX][currentY].status;
-    return visualise(path);
+    return visualise(path, startCoords);
   } else {
     pickCountMessage.textContent = "There is no route to the picking item";
     return null;
