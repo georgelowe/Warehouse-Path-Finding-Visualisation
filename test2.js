@@ -1,3 +1,16 @@
+var labelMap = {
+  1: "A",
+  2: "B",
+  3: "C",
+  4: "D",
+  5: "E",
+  6: "F",
+  7: "G",
+  8: "H",
+  9: "I",
+  10: "J",
+};
+
 function getPermutations(string) {
   var permutations = [];
 
@@ -18,7 +31,13 @@ function getPermutations(string) {
   return permutations;
 }
 
-function reducePermutations(string) {
+function reducePermutations(pickCount) {
+  var string = "";
+
+  for (let i = 1; i < pickCount + 1; i++) {
+    string = string + labelMap[i];
+  }
+  console.log(string);
   var permutationsHash = {};
   var permutations = getPermutations(string);
 
@@ -34,15 +53,19 @@ function reducePermutations(string) {
   return permutationsHash;
 }
 
-function myFunc(routes) {
+function myFunc(routes, allEdgesHash) {
   console.log(routes);
   var count = 0;
   var lowestCount = 999;
   var bestRoute = "";
-  var resultsArr = [];
 
   Object.keys(routes).forEach(function (key) {
     console.log("\nKey is " + key);
+
+    if (key.length == 1) {
+      lowestCount = hash[key];
+      bestRoute = key;
+    }
 
     for (let i = 0; i < key.length - 1; i++) {
       var newKey = key[i] + "" + key[i + 1];
@@ -82,7 +105,7 @@ function myFunc(routes) {
   );
 }
 
-var hash = {};
+let hash = {};
 hash["A"] = 10;
 hash["B"] = 6;
 hash["C"] = 21;
@@ -98,6 +121,5 @@ hash["BE"] = 18;
 hash["CE"] = 7;
 hash["DE"] = 4;
 
-var string = "ABCDE";
-var reducedPermutations = reducePermutations(string);
-myFunc(reducedPermutations);
+var reducedPermutations = reducePermutations(1);
+myFunc(reducedPermutations, hash);

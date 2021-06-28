@@ -61,7 +61,9 @@ goButton.addEventListener(
       var innerEdges = findInnerEdgeLengths(emptyHash);
       var allEdges = findEdgesFromStart(innerEdges);
       displayEdgeResults(allEdges);
-      console.log(allEdges);
+
+      var reducedPermutations = reducePermutations(pickCount);
+      myFunc(reducedPermutations, allEdges);
     } else {
       pickCountMessage.textContent =
         "You must select at least one item to be picked";
@@ -73,7 +75,6 @@ goButton.addEventListener(
 function displayEdgeResults(resultsHash) {
   Object.keys(resultsHash).forEach(function (key) {
     var value = resultsHash[key];
-    console.log(key + ":" + value);
   });
 }
 
@@ -216,4 +217,91 @@ function findEdgesFromStart(hash) {
     }
   }
   return hash;
+}
+
+function getPermutations(string) {
+  var permutations = [];
+
+  if (string.length === 1) {
+    permutations.push(string);
+    permutations[string];
+    return permutations;
+  }
+  for (var i = 0; i < string.length; i++) {
+    var firstChar = string[i];
+    var otherChar = string.substring(0, i) + string.substring(i + 1);
+    var otherPermutations = getPermutations(otherChar);
+
+    for (var j = 0; j < otherPermutations.length; j++) {
+      permutations.push(firstChar + otherPermutations[j]);
+    }
+  }
+  return permutations;
+}
+
+function reducePermutations(pickCount) {
+  var string = "";
+
+  for (let i = 1; i < pickCount + 1; i++) {
+    string = string + labelMap[i];
+  }
+
+  var permutationsHash = {};
+  var permutations = getPermutations(string);
+
+  // Create hash of permutations excluding reversed duplicates
+  for (let i = 0; i < permutations.length; i++) {
+    var perm = permutations[i];
+    var reversedPerm = perm.split("").reverse().join("");
+
+    if (!permutationsHash[perm] && !permutationsHash[reversedPerm]) {
+      permutationsHash[perm] = true;
+    }
+  }
+  return permutationsHash;
+}
+
+function myFunc(routes, hash) {
+  var count = 0;
+  var lowestCount = 999;
+  var bestRoute = "";
+
+  Object.keys(routes).forEach(function (key) {
+    if (key.length == 1) {
+      lowestCount = hash[key];
+      bestRoute = key;
+    }
+
+    for (let i = 0; i < key.length - 1; i++) {
+      var newKey = key[i] + "" + key[i + 1];
+      var sortedNewKey = newKey.split("").sort().join("");
+
+      count = count + hash[sortedNewKey];
+
+      if (i == key.length - 2) {
+        for (let i = 0; i < 2; i++) {
+          var updatedCount = count + hash[key[i * (key.length - 1)]];
+
+          var path = "" + key;
+
+          if (i == 1) {
+            path = path.split("").reverse().join("");
+          }
+
+          console.log(
+            "Route: Start->" + path + " has a score of " + updatedCount
+          );
+          if (updatedCount < lowestCount) {
+            lowestCount = updatedCount;
+            bestRoute = path;
+          }
+        }
+      }
+    }
+
+    count = 0;
+  });
+  console.log(
+    "Lowest count is " + lowestCount + " with route: start-> " + bestRoute
+  );
 }
