@@ -1,17 +1,21 @@
 // DOM Elements
 var clearButton = document.getElementById("clear-button");
 var setPickButton = document.getElementById("set-pick-button");
-var goButton = document.getElementById("go-button");
+var goButton = document.getElementById("optimal-route-button");
 var generateMapButton = document.getElementById("generate-map-button");
 var pickCountMessage = document.getElementById("pick-count-message-container");
 var resultsMessage = document.getElementById("results-message");
+
+var optimalRouteContainer = document.getElementById("optimal-route-container");
+var edgesContainer = document.getElementById("edges-container");
+var routesContainer = document.getElementById("routes-container");
 
 // Tiles
 var canvas = document.getElementById("canvas");
 ctx = canvas.getContext("2d");
 var tileArray = [];
-var numColumns = 40;
-var numRows = 25;
+var numColumns = 45;
+var numRows = 20;
 var tileDim = 20;
 
 // Selection Mode Handling
@@ -35,6 +39,9 @@ clearButton.addEventListener(
   "click",
   function () {
     clearGrid();
+    clearResults(optimalRouteContainer);
+    clearResults(edgesContainer);
+    clearResults(routesContainer);
   },
   false
 );
@@ -72,15 +79,20 @@ goButton.addEventListener(
   false
 );
 
+// TO DO: Pass values to be used in DOM display
 function displayEdgeResults(resultsHash) {
+  var content;
   Object.keys(resultsHash).forEach(function (key) {
     var value = resultsHash[key];
+    if (key.length == 1) {
+      content = "Start->" + key;
+    } else {
+      content = key;
+    }
+
+    appendNewDiv(edgesContainer, content, value);
   });
 }
-
-generateMapButton.addEventListener("click", function () {}, false);
-
-generateMapButton.addEventListener("click", function () {}, false);
 
 // Populate tileArray of tile objects
 for (let i = 0; i < numColumns; i++) {
@@ -120,6 +132,12 @@ function clearGrid() {
   populateGrid();
 }
 
+function clearResults(container) {
+  while (container.firstChild) {
+    container.removeChild(container.lastChild);
+  }
+}
+
 function drawTile(tileXPos, tileYPos, tileColour) {
   ctx.fillStyle = tileColour;
   ctx.beginPath();
@@ -133,17 +151,17 @@ function drawTile(tileXPos, tileYPos, tileColour) {
   }
 }
 
-function updatePickCountMessage() {
-  pickCountMessage.textContent =
-    "There are currently " + pickCount + " items selected to pick";
-}
-
 function displayLabel(ctx, text, tileXPos, tileYPos) {
   ctx.font = "10pt Arial";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillStyle = "#ffffff";
   ctx.fillText(text, tileXPos + tileDim / 2, tileYPos + tileDim / 2);
+}
+
+function updatePickCountMessage() {
+  pickCountMessage.textContent =
+    "There are currently " + pickCount + " items selected to pick";
 }
 
 canvas.onmousedown = selectTile;
@@ -265,6 +283,7 @@ function myFunc(routes, hash) {
   var count = 0;
   var lowestCount = 999;
   var bestRoute = "";
+  var content;
 
   Object.keys(routes).forEach(function (key) {
     if (key.length == 1) {
@@ -288,9 +307,9 @@ function myFunc(routes, hash) {
             path = path.split("").reverse().join("");
           }
 
-          console.log(
-            "Route: Start->" + path + " has a score of " + updatedCount
-          );
+          content = "Start->" + path;
+          appendNewDiv(routesContainer, content, updatedCount);
+
           if (updatedCount < lowestCount) {
             lowestCount = updatedCount;
             bestRoute = path;
@@ -301,7 +320,32 @@ function myFunc(routes, hash) {
 
     count = 0;
   });
-  console.log(
-    "Lowest count is " + lowestCount + " with route: start-> " + bestRoute
-  );
+  content = "Start->" + bestRoute;
+  appendNewDiv(optimalRouteContainer, content, lowestCount);
+}
+
+function appendNewDiv(container, content, cost) {
+  const div = document.createElement("div");
+
+  switch (container.id) {
+    case "edges-container":
+      div.classList.add("edges-div");
+      break;
+    case "routes-container":
+      div.classList.add("routes-div");
+      break;
+    case "optimal-route-container":
+      div.classList.add("optimal-route-div");
+      break;
+  }
+
+  div.classList.add("results-div");
+
+  div.innerHTML = `
+      <div>
+        <p >${content}</p>
+        <p >${cost}</p>
+      </div>
+    `;
+  container.appendChild(div);
 }

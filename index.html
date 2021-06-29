@@ -24,17 +24,26 @@
         <button class="config-button" id="generate-map-button">
           Generate Random Map
         </button>
-        <button class="action-button" id="go-button">Go!</button>
       </div>
-
       <div id="pick-count-message-container">
         There are currently 0 items selected to pick
       </div>
 
-      <canvas id="canvas" width="917" height="572"></canvas>
+      <div class="control-container">
+        <button class="action-button" id="optimal-route-button">
+          Find Optimal Route
+        </button>
+      </div>
+
+      <canvas id="canvas" width="1032" height="457"></canvas>
 
       <div class="results-container">
-        <h2>Results</h2>
+        <div id="optimal-route-container"></div>
+        <!-- <h2>Results</h2> -->
+
+        <div id="edges-container"></div>
+        <div id="routes-container"></div>
+
         <p id="results-message"></p>
       </div>
     </div>

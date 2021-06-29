@@ -4,6 +4,7 @@
   --button-text-colour: #ffffff;
   --info-text-colour: #ffffff;
   --button-colour: #f64900;
+  --green: #9dd999;
 }
 
 html {
@@ -44,9 +45,13 @@ button {
 
 .control-container {
   text-align: center;
-  margin: 1rem;
+
+  margin: 0rem;
 }
 
+#optimal-route-button {
+  margin-bottom: 0.5rem;
+}
 .config-button {
   background-color: (var(--background-colour));
   color: var(--title-colour);
@@ -67,6 +72,31 @@ button {
 
 #pick-count-message-container {
   margin-bottom: 1rem;
+}
+
+.results-container {
+  width: 1032px;
+  margin: auto;
+}
+
+.results-div {
+  border-radius: 4px;
+  margin: 0.5rem;
+  padding: 0.5rem;
+  /* color: var(--button-text-colour); */
+  color: black;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.edges-div {
+  background-color: lightblue;
+}
+.routes-div {
+  background-color: wheat;
+}
+.optimal-route-div {
+  background-color: var(--green);
 }
 
 /* .results-container {
