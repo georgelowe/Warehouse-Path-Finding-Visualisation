@@ -68,7 +68,8 @@ findOptimalRouteButton.addEventListener(
       edgeCostsHashMap = calculateEdgeCosts();
       displayEdgeResults(edgeCostsHashMap);
 
-      var routePermutations = calculatePermutations();
+      var routePermutations = calculatePermutations(pickCount);
+
       calculateRouteCosts(routePermutations, edgeCostsHashMap);
     } else {
       pickCountMessage.textContent =
@@ -77,20 +78,6 @@ findOptimalRouteButton.addEventListener(
   },
   false
 );
-
-// TO DO: Pass values to be used in DOM display
-function displayEdgeResults(resultsHash) {
-  var content;
-  Object.keys(resultsHash).forEach(function (key) {
-    var value = resultsHash[key];
-    if (key.length == 1) {
-      content = "Start->" + key;
-    } else {
-      content = key;
-    }
-    appendNewDiv(edgesContainer, content, value);
-  });
-}
 
 // Populate tileArray of tile objects
 for (let i = 0; i < numColumns; i++) {
@@ -123,12 +110,16 @@ function populateGrid() {
 }
 
 function clearGrid() {
-  pickCount = 0;
+  clearPickCount();
   for (let i = 0; i < numColumns; i++) {
     for (let j = 0; j < numRows; j++) {
       tileArray[i][j].setStatus("empty");
     }
   }
+}
+
+function clearPickCount() {
+  pickCount = 0;
 }
 
 function clearResults(container) {
@@ -243,24 +234,18 @@ function calculateEdgeCosts() {
   return hash;
 }
 
-function getPermutations(string) {
-  var permutations = [];
-
-  if (string.length === 1) {
-    permutations.push(string);
-    permutations[string];
-    return permutations;
-  }
-  for (var i = 0; i < string.length; i++) {
-    var firstChar = string[i];
-    var otherChar = string.substring(0, i) + string.substring(i + 1);
-    var otherPermutations = getPermutations(otherChar);
-
-    for (var j = 0; j < otherPermutations.length; j++) {
-      permutations.push(firstChar + otherPermutations[j]);
+// TO DO: Pass values to be used in DOM display
+function displayEdgeResults(resultsHash) {
+  var content;
+  Object.keys(resultsHash).forEach(function (key) {
+    var value = resultsHash[key];
+    if (key.length == 1) {
+      content = "Start->" + key;
+    } else {
+      content = key;
     }
-  }
-  return permutations;
+    appendNewDiv(edgesContainer, content, value);
+  });
 }
 
 function calculatePermutations(pickCount) {
@@ -271,7 +256,7 @@ function calculatePermutations(pickCount) {
   }
 
   var permutationsHash = {};
-  var permutations = getPermutations(string);
+  var permutations = getAllPermutations(string);
 
   // Create hash of permutations excluding reversed duplicates
   for (let i = 0; i < permutations.length; i++) {
@@ -285,15 +270,37 @@ function calculatePermutations(pickCount) {
   return permutationsHash;
 }
 
+function getAllPermutations(string) {
+  var permutations = [];
+
+  if (string.length === 1) {
+    permutations.push(string);
+    permutations[string];
+
+    return permutations;
+  }
+  for (var i = 0; i < string.length; i++) {
+    var firstChar = string[i];
+    var otherChar = string.substring(0, i) + string.substring(i + 1);
+
+    var otherPermutations = getAllPermutations(otherChar);
+
+    for (var j = 0; j < otherPermutations.length; j++) {
+      permutations.push(firstChar + otherPermutations[j]);
+    }
+  }
+  return permutations;
+}
+
 function calculateRouteCosts(routes, hash) {
-  var count = 0;
-  var lowestCount = 999;
+  var cost = 0;
+  var lowestCost = 999;
   var bestRoute = "";
   var content;
 
   Object.keys(routes).forEach(function (key) {
     if (key.length == 1) {
-      lowestCount = hash[key];
+      lowestCost = hash[key];
       bestRoute = key;
     }
 
@@ -301,11 +308,11 @@ function calculateRouteCosts(routes, hash) {
       var newKey = key[i] + "" + key[i + 1];
       var sortedNewKey = newKey.split("").sort().join("");
 
-      count = count + hash[sortedNewKey];
+      cost = cost + hash[sortedNewKey];
 
       if (i == key.length - 2) {
         for (let i = 0; i < 2; i++) {
-          var updatedCount = count + hash[key[i * (key.length - 1)]];
+          var updatedCost = cost + hash[key[i * (key.length - 1)]];
 
           var path = "" + key;
 
@@ -314,20 +321,20 @@ function calculateRouteCosts(routes, hash) {
           }
 
           content = "Start->" + path;
-          appendNewDiv(routesContainer, content, updatedCount);
+          appendNewDiv(routesContainer, content, updatedCost);
 
-          if (updatedCount < lowestCount) {
-            lowestCount = updatedCount;
+          if (updatedCost < lowestCost) {
+            lowestCost = updatedCost;
             bestRoute = path;
           }
         }
       }
     }
 
-    count = 0;
+    cost = 0;
   });
   content = "Start->" + bestRoute;
-  appendNewDiv(optimalRouteContainer, content, lowestCount);
+  appendNewDiv(optimalRouteContainer, content, lowestCost);
 }
 
 function appendNewDiv(container, content, cost) {

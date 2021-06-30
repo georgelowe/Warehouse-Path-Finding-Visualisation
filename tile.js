@@ -24,9 +24,6 @@ class Tile {
       this.colour = "#736BA6";
     } else if (status == "pick") {
       this.colour = "#f64900";
-    } else if (status == "end") {
-      this.label == "end";
-      this.colour = "#960000";
     } else if (status == "x") {
       this.colour = "#9DD999";
     }
