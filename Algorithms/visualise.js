@@ -25,8 +25,8 @@ function visualise(path, startCoords) {
         tileArray[currentX][currentY].setStatus("x");
         stepCount++;
         drawTile(
-          currentX * (tileDim + 3),
-          currentY * (tileDim + 3),
+          currentX * (tileDimension + 3),
+          currentY * (tileDimension + 3),
           tileArray[currentX][currentY].colour
         );
       }
