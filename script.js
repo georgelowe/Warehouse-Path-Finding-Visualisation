@@ -239,10 +239,10 @@ function calculateEdgeCosts() {
 }
 
 function displayEdgeResults(resultsHash) {
-  Object.keys(resultsHash).forEach(function (key) {
-    var value = resultsHash[key];
-    var content = key;
-    if (key.length == 1) {
+  Object.keys(resultsHash).forEach(function (edge) {
+    var value = resultsHash[edge];
+    var content = edge;
+    if (edge.length == 1) {
       content = "Start->" + content;
     }
     appendNewDiv(edgeResultsContainer, content, value);
@@ -299,25 +299,23 @@ function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
   var content;
   var routeResults = [];
 
-  Object.keys(routePermutationsHash).forEach(function (key) {
-    if (key.length == 1) {
-      routeResults = [[key, edgeCostsHash[key]]];
+  Object.keys(routePermutationsHash).forEach(function (route) {
+    if (route.length == 1) {
+      routeResults = [[route, edgeCostsHash[route]]];
       return routeResults;
     }
 
-    for (let i = 0; i < key.length - 1; i++) {
-      var newKey = key[i] + "" + key[i + 1];
-      var sortedNewKey = newKey.split("").sort().join("");
+    for (let i = 0; i < route.length - 1; i++) {
+      var routeSubsection = route[i] + "" + route[i + 1];
+      var orderedRouteSubsection = routeSubsection.split("").sort().join("");
+      currentCost += edgeCostsHash[orderedRouteSubsection];
 
-      currentCost += edgeCostsHash[sortedNewKey];
-
-      if (i == key.length - 2) {
+      if (i == route.length - 2) {
         for (let i = 0; i < 2; i++) {
           var updatedCost =
-            currentCost + edgeCostsHash[key[i * (key.length - 1)]];
+            currentCost + edgeCostsHash[route[i * (route.length - 1)]];
 
-          var path = "" + key;
-
+          var path = "" + route;
           if (i == 1) {
             path = path.split("").reverse().join("");
           }
@@ -326,11 +324,20 @@ function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
         }
       }
     }
-
     currentCost = 0;
   });
-
   return routeResults;
+}
+
+function splitRouteIntoSubsections(route) {
+  var routeSubSections = [];
+
+  for (let i = 0; i < route.length; i++) {
+    var routeSubsection = route[i] + "" + route[i + 1];
+    var orderedRouteSubsection = routeSubsection.split("").sort().join("");
+  }
+
+  return routeSubSections;
 }
 
 function displayRouteResults(routeResults) {
@@ -340,7 +347,6 @@ function displayRouteResults(routeResults) {
 }
 
 function calculateOptimalRoute(routeResults) {
-  console.log(routeResults);
   var lowestCost = 999;
   var optimalRoute = "";
   for (let i = 0; i < routeResults.length; i++) {
@@ -349,7 +355,6 @@ function calculateOptimalRoute(routeResults) {
       optimalRoute = routeResults[i][0];
     }
   }
-  console.log(optimalRoute);
   return [optimalRoute, lowestCost];
 }
 
@@ -359,7 +364,6 @@ function displayOptimalRouteResult(optimalRoute) {
 
 function appendNewDiv(container, content, cost) {
   const div = document.createElement("div");
-
   if (container.id == "edges-container") {
     div.classList.add("edges-div");
   } else if (container.id == "routes-container") {
@@ -367,7 +371,6 @@ function appendNewDiv(container, content, cost) {
   } else if (container.id == "optimal-route-container") {
     div.classList.add("optimal-route-div");
   }
-
   div.classList.add("results-div");
   div.innerHTML = `<p >${content}</p><p >${cost}</p>`;
   container.appendChild(div);
