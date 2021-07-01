@@ -238,37 +238,38 @@ function calculateEdgeCosts() {
   return edgeCostsHash;
 }
 
-// TO DO: Pass values to be used in DOM display
 function displayEdgeResults(resultsHash) {
   Object.keys(resultsHash).forEach(function (key) {
     var value = resultsHash[key];
-
     var content = key;
     if (key.length == 1) {
       content = "Start->" + content;
     }
-
     appendNewDiv(edgeResultsContainer, content, value);
   });
 }
 
 function calculatePermutations(pickCount) {
   var string = "";
+  var permutationsHash = {};
 
   for (let i = 1; i < pickCount + 1; i++) {
-    string = string + labelHashMap[i];
+    string += labelHashMap[i];
   }
-
-  var permutationsHash = {};
   var permutations = getAllPermutations(string);
 
-  // Create hash of permutations excluding reversed duplicates
   for (let i = 0; i < permutations.length; i++) {
-    var perm = permutations[i];
-    var reversedPerm = perm.split("").reverse().join("");
+    var currentPermutation = permutations[i];
+    var reversedCurrentPermutation = currentPermutation
+      .split("")
+      .reverse()
+      .join("");
 
-    if (!permutationsHash[perm] && !permutationsHash[reversedPerm]) {
-      permutationsHash[perm] = true;
+    if (
+      !permutationsHash[currentPermutation] &&
+      !permutationsHash[reversedCurrentPermutation]
+    ) {
+      permutationsHash[currentPermutation] = true;
     }
   }
   return permutationsHash;
@@ -277,16 +278,13 @@ function calculatePermutations(pickCount) {
 function getAllPermutations(string) {
   var permutations = [];
 
-  if (string.length === 1) {
+  if (string.length == 1) {
     permutations.push(string);
-    permutations[string];
-
     return permutations;
   }
   for (var i = 0; i < string.length; i++) {
     var firstChar = string[i];
     var otherChar = string.substring(0, i) + string.substring(i + 1);
-
     var otherPermutations = getAllPermutations(otherChar);
 
     for (var j = 0; j < otherPermutations.length; j++) {
@@ -311,7 +309,7 @@ function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
       var newKey = key[i] + "" + key[i + 1];
       var sortedNewKey = newKey.split("").sort().join("");
 
-      currentCost = currentCost + edgeCostsHash[sortedNewKey];
+      currentCost += edgeCostsHash[sortedNewKey];
 
       if (i == key.length - 2) {
         for (let i = 0; i < 2; i++) {
@@ -342,6 +340,7 @@ function displayRouteResults(routeResults) {
 }
 
 function calculateOptimalRoute(routeResults) {
+  console.log(routeResults);
   var lowestCost = 999;
   var optimalRoute = "";
   for (let i = 0; i < routeResults.length; i++) {
@@ -350,6 +349,7 @@ function calculateOptimalRoute(routeResults) {
       optimalRoute = routeResults[i][0];
     }
   }
+  console.log(optimalRoute);
   return [optimalRoute, lowestCost];
 }
 

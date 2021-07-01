@@ -83,8 +83,7 @@ button {
   border-radius: 4px;
   margin: 0.5rem;
   padding: 0.5rem;
-  /* color: var(--button-text-colour); */
-  color: black;
+  color: var(--title-colour);
   font-family: inherit;
   font-size: 1rem;
 }
@@ -98,6 +97,3 @@ button {
 .optimal-route-div {
   background-color: var(--green);
 }
-
-/* .results-container {
-} */
