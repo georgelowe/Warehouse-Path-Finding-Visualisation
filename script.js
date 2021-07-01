@@ -4,14 +4,14 @@ var setPickButton = document.getElementById("set-pick-button");
 var findOptimalRouteButton = document.getElementById("optimal-route-button");
 
 // DOM Containers
-var pickCountMessage = document.getElementById("pick-count-message-container");
+var configMessage = document.getElementById("pick-count-message-container");
 var optimalRouteContainer = document.getElementById("optimal-route-container");
-var edgesContainer = document.getElementById("edges-container");
-var routesContainer = document.getElementById("routes-container");
+var edgeResultsContainer = document.getElementById("edges-container");
+var routeResultsContainer = document.getElementById("routes-container");
 
 // Tile Grid Configuration
 var canvas = document.getElementById("canvas");
-ctx = canvas.getContext("2d");
+canvasContext = canvas.getContext("2d");
 var tileArray = [];
 var numColumns = 45;
 var numRows = 20;
@@ -38,11 +38,11 @@ clearButton.addEventListener(
   "click",
   function () {
     clearGrid();
-    updatePickCountMessage();
+    updateConfigMessage();
     populateGrid();
     clearResults(optimalRouteContainer);
-    clearResults(edgesContainer);
-    clearResults(routesContainer);
+    clearResults(edgeResultsContainer);
+    clearResults(routeResultsContainer);
   },
   false
 );
@@ -68,12 +68,17 @@ findOptimalRouteButton.addEventListener(
       edgeCostsHashMap = calculateEdgeCosts();
       displayEdgeResults(edgeCostsHashMap);
 
-      var routePermutations = calculatePermutations(pickCount);
+      var routePermutationsHash = calculatePermutations(pickCount);
+      var routeResults = calculateRouteCosts(
+        routePermutationsHash,
+        edgeCostsHashMap
+      );
+      displayRouteResults(routeResults);
 
-      calculateRouteCosts(routePermutations, edgeCostsHashMap);
+      var optimalRoute = calculateOptimalRoute(routeResults);
+      displayOptimalRouteResult(optimalRoute);
     } else {
-      pickCountMessage.textContent =
-        "You must select at least one item to be picked";
+      updateConfigMessage();
     }
   },
   false
@@ -129,33 +134,38 @@ function clearResults(container) {
 }
 
 function drawTile(tileXPos, tileYPos, tileColour) {
-  ctx.fillStyle = tileColour;
-  ctx.beginPath();
-  ctx.rect(tileXPos, tileYPos, 20, 20);
-  ctx.closePath();
-  ctx.fill();
+  canvasContext.fillStyle = tileColour;
+  canvasContext.beginPath();
+  canvasContext.rect(tileXPos, tileYPos, 20, 20);
+  canvasContext.closePath();
+  canvasContext.fill();
 
   // label tile if it is a pick item
   if (tileColour == "#f64900") {
-    displayLabel(ctx, labelHashMap[pickCount], tileXPos, tileYPos);
+    displayLabel(canvasContext, labelHashMap[pickCount], tileXPos, tileYPos);
   }
 }
 
-function displayLabel(ctx, text, tileXPos, tileYPos) {
-  ctx.font = "10pt Arial";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = "#ffffff";
-  ctx.fillText(
+function displayLabel(canvasContext, text, tileXPos, tileYPos) {
+  canvasContext.font = "10pt Arial";
+  canvasContext.textAlign = "center";
+  canvasContext.textBaseline = "middle";
+  canvasContext.fillStyle = "#ffffff";
+  canvasContext.fillText(
     text,
     tileXPos + tileDimension / 2,
     tileYPos + tileDimension / 2
   );
 }
 
-function updatePickCountMessage() {
-  pickCountMessage.textContent =
-    "There are currently " + pickCount + " items selected to pick";
+function updateConfigMessage() {
+  if (pickCount == 0) {
+    configMessage.textContent =
+      "You must select at least one item to be picked";
+  } else {
+    configMessage.textContent =
+      "There are currently " + pickCount + " items selected to pick";
+  }
 }
 
 canvas.onmousedown = selectTile;
@@ -176,7 +186,7 @@ function selectTile(e) {
           if (selectionMode == "rackSelect") {
             if (tileArray[i][j].status == "pick") {
               pickCount--;
-              updatePickCountMessage();
+              updateConfigMessage();
             }
             tileArray[i][j].setStatus("racking");
           } else if (
@@ -187,7 +197,7 @@ function selectTile(e) {
             tileArray[i][j].setStatus("pick");
             tileArray[i][j].setLabel("" + labelHashMap[pickCount + 1]);
             pickCount++;
-            updatePickCountMessage();
+            updateConfigMessage();
           }
 
           drawTile(
@@ -202,49 +212,43 @@ function selectTile(e) {
 }
 
 function calculateEdgeCosts() {
-  var hash = {};
-  var string = "";
+  var edgeCostsHash = {};
 
   for (let i = 1; i < pickCount + 1; i++) {
-    if (!hash[labelHashMap[i]]) {
-      hash[labelHashMap[i]] = solveUnweighted(
+    if (!edgeCostsHash[labelHashMap[i]]) {
+      edgeCostsHash[labelHashMap[i]] = solveUnweighted(
         tileArray,
         "start",
         labelHashMap[i]
       );
     }
   }
-
-  // create string from pickcount --> i.e. 3 -> "ABC"
-  for (let i = 1; i < pickCount + 1; i++) {
-    string = string + labelHashMap[i];
-  }
-
-  for (let i = 0; i < string.length - 1; i++) {
-    for (let j = 1; j < string.length; j++) {
-      if (i + j < string.length) {
-        let res = string[i] + "" + string[i + j];
-
-        if (!hash[res]) {
-          hash[res] = solveUnweighted(tileArray, string[i], string[i + j]);
-        }
+  for (let i = 1; i < pickCount; i++) {
+    for (let j = i + 1; j < pickCount + 1; j++) {
+      let edge = labelHashMap[i] + "" + labelHashMap[j];
+      if (!edgeCostsHash[edge]) {
+        edgeCostsHash[edge] = solveUnweighted(
+          tileArray,
+          labelHashMap[i],
+          labelHashMap[j]
+        );
       }
     }
   }
-  return hash;
+  return edgeCostsHash;
 }
 
 // TO DO: Pass values to be used in DOM display
 function displayEdgeResults(resultsHash) {
-  var content;
   Object.keys(resultsHash).forEach(function (key) {
     var value = resultsHash[key];
+
+    var content = key;
     if (key.length == 1) {
-      content = "Start->" + key;
-    } else {
-      content = key;
+      content = "Start->" + content;
     }
-    appendNewDiv(edgesContainer, content, value);
+
+    appendNewDiv(edgeResultsContainer, content, value);
   });
 }
 
@@ -292,49 +296,65 @@ function getAllPermutations(string) {
   return permutations;
 }
 
-function calculateRouteCosts(routes, hash) {
-  var cost = 0;
-  var lowestCost = 999;
-  var bestRoute = "";
+function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
+  var currentCost = 0;
   var content;
+  var routeResults = [];
 
-  Object.keys(routes).forEach(function (key) {
+  Object.keys(routePermutationsHash).forEach(function (key) {
     if (key.length == 1) {
-      lowestCost = hash[key];
-      bestRoute = key;
+      routeResults = [[key, edgeCostsHash[key]]];
+      return routeResults;
     }
 
     for (let i = 0; i < key.length - 1; i++) {
       var newKey = key[i] + "" + key[i + 1];
       var sortedNewKey = newKey.split("").sort().join("");
 
-      cost = cost + hash[sortedNewKey];
+      currentCost = currentCost + edgeCostsHash[sortedNewKey];
 
       if (i == key.length - 2) {
         for (let i = 0; i < 2; i++) {
-          var updatedCost = cost + hash[key[i * (key.length - 1)]];
+          var updatedCost =
+            currentCost + edgeCostsHash[key[i * (key.length - 1)]];
 
           var path = "" + key;
 
           if (i == 1) {
             path = path.split("").reverse().join("");
           }
-
           content = "Start->" + path;
-          appendNewDiv(routesContainer, content, updatedCost);
-
-          if (updatedCost < lowestCost) {
-            lowestCost = updatedCost;
-            bestRoute = path;
-          }
+          routeResults.push([content, updatedCost]);
         }
       }
     }
 
-    cost = 0;
+    currentCost = 0;
   });
-  content = "Start->" + bestRoute;
-  appendNewDiv(optimalRouteContainer, content, lowestCost);
+
+  return routeResults;
+}
+
+function displayRouteResults(routeResults) {
+  for (let i = 0; i < routeResults.length; i++) {
+    appendNewDiv(routeResultsContainer, routeResults[i][0], routeResults[i][1]);
+  }
+}
+
+function calculateOptimalRoute(routeResults) {
+  var lowestCost = 999;
+  var optimalRoute = "";
+  for (let i = 0; i < routeResults.length; i++) {
+    if (routeResults[i][1] < lowestCost) {
+      lowestCost = routeResults[i][1];
+      optimalRoute = routeResults[i][0];
+    }
+  }
+  return [optimalRoute, lowestCost];
+}
+
+function displayOptimalRouteResult(optimalRoute) {
+  appendNewDiv(optimalRouteContainer, optimalRoute[0], optimalRoute[1]);
 }
 
 function appendNewDiv(container, content, cost) {

@@ -68,13 +68,13 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
   }
 
   if (pathFound) {
-    pickCountMessage.textContent = "Pick route found successfully";
+    configMessage.textContent = "Pick route found successfully";
 
     var path = tileArray[currentX][currentY].status;
 
     return visualise(path, startCoords);
   } else {
-    pickCountMessage.textContent = "There is no route to the picking item";
+    configMessage.textContent = "There is no route to the picking item";
     return null;
   }
 }
