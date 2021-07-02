@@ -2,14 +2,23 @@
 
 Search algorithm visualisation project for warehouse pick routes.
 
---> make results show as div cards
---> add return value for 'explored nodes' so we can compare the unweighted and weighted algs
---> refactor everything
---> add expored tiles count?
---> colour explored tiles?
---> animate the visualise function so that it shows it slowly drawing the route?
---> animate the solve function so it shows as tiles are being explored and only draw the path once its done
---> map generation
---> Create hash of edges between nodes to assist in mapping optimal route?
+- [x] make results show as div cards
+- [] add return value for 'explored nodes' so we can compare the unweighted and weighted algs
+- [] colour explored tiles?
+- [] animate the visualise function so that it shows it slowly drawing the route?
+- [] allow drawing instead of clicking
 
-Find Optimal Route button --> draws out all edges and appends edge info to edge div, then appends route info to route div, then appends optimal route to optimal route div, then finally calls (with set timeout) method to clear grid and plot the final route
+## Created by:
+
+[George Lowe](https://github.com/georgelowe)
+
+Contact me here:
+
+<p align="left">
+  <a href="https://www.linkedin.com/in/george-lowe/"> 
+    <img alt="My LinkedIn" src="https://img.shields.io/badge/-LinkedIn-0072b1?style=flat&logo=Linkedin&logoColor=white" />
+  </a>
+  <a href="https://twitter.com/gloweio"> 
+    <img alt="My Twitter" src="https://img.shields.io/badge/-Twitter-00acee?style=flat&logo=Twitter&logoColor=white" />
+  </a>
+</p>
