@@ -10,25 +10,6 @@ class Tile {
     this.path = "";
   }
 
-  setStatus(status) {
-    this.status = status;
-
-    if (status == "start") {
-      this.colour = "#0B9F00";
-      this.label = "start";
-    } else if (status == "empty") {
-      this.label = "";
-      this.colour = "#dbdbdb";
-    } else if (status == "racking") {
-      this.label = "";
-      this.colour = "#736BA6";
-    } else if (status == "pick") {
-      this.colour = "#f64900";
-    } else if (status == "x") {
-      this.colour = "#9DD999";
-    }
-  }
-
   setColour(colour) {
     this.colour = colour;
   }
@@ -50,6 +31,24 @@ class Tile {
   unlock() {
     if (!this.clickable) {
       this.clickable = true;
+    }
+  }
+  setStatus(status) {
+    this.status = status;
+
+    if (status == "start") {
+      this.colour = "#0B9F00";
+      this.label = "start";
+    } else if (status == "empty") {
+      this.label = "";
+      this.colour = "#dbdbdb";
+    } else if (status == "racking") {
+      this.label = "";
+      this.colour = "#736BA6";
+    } else if (status == "pick") {
+      this.colour = "#f64900";
+    } else if (status == "x") {
+      this.colour = "#9DD999";
     }
   }
 }

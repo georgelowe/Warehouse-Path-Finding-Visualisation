@@ -25,8 +25,8 @@ function visualise(path, startCoords) {
         tileArray[currentX][currentY].setStatus("x");
         stepCount++;
         drawTile(
-          currentX * (tileDimension + 3),
-          currentY * (tileDimension + 3),
+          currentX * (tileGrid.tileDimension + tileGrid.tileSpacing),
+          currentY * (tileGrid.tileDimension + tileGrid.tileSpacing),
           tileArray[currentX][currentY].colour
         );
       }
@@ -38,8 +38,8 @@ function visualise(path, startCoords) {
 }
 
 function resetEmptyTiles() {
-  for (let i = 0; i < numColumns; i++) {
-    for (let j = 0; j < numRows; j++) {
+  for (let i = 0; i < tileGrid.numColumns; i++) {
+    for (let j = 0; j < tileGrid.numRows; j++) {
       if (
         tileArray[i][j].status.includes("start") &&
         tileArray[i][j].status.length > "start".length

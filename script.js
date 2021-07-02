@@ -13,13 +13,13 @@ var routeResultsContainer = document.getElementById("routes-container");
 var canvas = document.getElementById("canvas");
 canvasContext = canvas.getContext("2d");
 var tileArray = [];
-var numColumns = 45;
-var numRows = 20;
-var tileDimension = 20;
+
+var tileGrid = new Grid(20, 45, 3, 20);
 
 // Selection Mode
 var selectionMode = "rackSelect";
 var pickCount = 0;
+var maxPickCount = 10;
 var labelHashMap = {
   1: "A",
   2: "B",
@@ -85,12 +85,12 @@ findOptimalRouteButton.addEventListener(
 );
 
 // Populate tileArray of tile objects
-for (let i = 0; i < numColumns; i++) {
+for (let i = 0; i < tileGrid.numColumns; i++) {
   tileArray[i] = [];
-  for (let j = 0; j < numRows; j++) {
+  for (let j = 0; j < tileGrid.numRows; j++) {
     tileArray[i][j] = new Tile(
-      i * (tileDimension + 3),
-      j * (tileDimension + 3)
+      i * (tileGrid.tileDimension + tileGrid.tileSpacing),
+      j * (tileGrid.tileDimension + tileGrid.tileSpacing)
     );
   }
 }
@@ -100,15 +100,15 @@ populateGrid();
 function configDefaultTiles() {
   tileArray[0][0].setStatus("start");
   tileArray[0][0].lock();
-  tileArray[numColumns - 1][numRows - 1].setStatus("X");
-  tileArray[numColumns - 1][numRows - 1].lock();
+  tileArray[tileGrid.numColumns - 1][tileGrid.numRows - 1].setStatus("X");
+  tileArray[tileGrid.numColumns - 1][tileGrid.numRows - 1].lock();
 }
 
 // Populate canvas with grid of tiles
 function populateGrid() {
   configDefaultTiles();
-  for (let i = 0; i < numColumns; i++) {
-    for (let j = 0; j < numRows; j++) {
+  for (let i = 0; i < tileGrid.numColumns; i++) {
+    for (let j = 0; j < tileGrid.numRows; j++) {
       drawTile(tileArray[i][j].x, tileArray[i][j].y, tileArray[i][j].colour);
     }
   }
@@ -116,8 +116,8 @@ function populateGrid() {
 
 function clearGrid() {
   clearPickCount();
-  for (let i = 0; i < numColumns; i++) {
-    for (let j = 0; j < numRows; j++) {
+  for (let i = 0; i < tileGrid.numColumns; i++) {
+    for (let j = 0; j < tileGrid.numRows; j++) {
       tileArray[i][j].setStatus("empty");
     }
   }
@@ -153,8 +153,8 @@ function displayLabel(canvasContext, text, tileXPos, tileYPos) {
   canvasContext.fillStyle = "#ffffff";
   canvasContext.fillText(
     text,
-    tileXPos + tileDimension / 2,
-    tileYPos + tileDimension / 2
+    tileXPos + tileGrid.tileDimension / 2,
+    tileYPos + tileGrid.tileDimension / 2
   );
 }
 
@@ -171,16 +171,18 @@ function updateConfigMessage() {
 canvas.onmousedown = selectTile;
 
 function selectTile(e) {
-  let xCoord = e.pageX - canvas.offsetLeft;
-  let yCoord = e.pageY - canvas.offsetTop;
-
-  for (let i = 0; i < numColumns; i++) {
-    for (let j = 0; j < numRows; j++) {
+  coords = locateMousePosition(e);
+  for (let i = 0; i < tileGrid.numColumns; i++) {
+    for (let j = 0; j < tileGrid.numRows; j++) {
       if (
-        i * (tileDimension + 3) < xCoord &&
-        xCoord < i * (tileDimension + 3) + tileDimension &&
-        j * (tileDimension + 3) < yCoord &&
-        yCoord < j * (tileDimension + 3) + tileDimension
+        i * (tileGrid.tileDimension + tileGrid.tileSpacing) < coords.x &&
+        coords.x <
+          i * (tileGrid.tileDimension + tileGrid.tileSpacing) +
+            tileGrid.tileDimension &&
+        j * (tileGrid.tileDimension + tileGrid.tileSpacing) < coords.y &&
+        coords.y <
+          j * (tileGrid.tileDimension + tileGrid.tileSpacing) +
+            tileGrid.tileDimension
       ) {
         if (tileArray[i][j].isClickable) {
           if (selectionMode == "rackSelect") {
@@ -192,7 +194,7 @@ function selectTile(e) {
           } else if (
             (selectionMode = "pickSelect") &&
             tileArray[i][j].status != "pick" &&
-            pickCount < 10
+            pickCount < maxPickCount
           ) {
             tileArray[i][j].setStatus("pick");
             tileArray[i][j].setLabel("" + labelHashMap[pickCount + 1]);
@@ -201,14 +203,21 @@ function selectTile(e) {
           }
 
           drawTile(
-            i * (tileDimension + 3),
-            j * (tileDimension + 3),
+            i * (tileGrid.tileDimension + tileGrid.tileSpacing),
+            j * (tileGrid.tileDimension + tileGrid.tileSpacing),
             tileArray[i][j].colour
           );
         }
       }
     }
   }
+}
+
+function locateMousePosition(e) {
+  coords = {};
+  coords.x = e.pageX - canvas.offsetLeft;
+  coords.y = e.pageY - canvas.offsetTop;
+  return coords;
 }
 
 function calculateEdgeCosts() {

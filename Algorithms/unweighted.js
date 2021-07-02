@@ -15,7 +15,7 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
       pathFound = true;
     }
     if (
-      currentX < numColumns - 1 &&
+      currentX < tileGrid.numColumns - 1 &&
       tileArray[currentX + 1][currentY].label == endLabel
     ) {
       pathFound = true;
@@ -24,7 +24,7 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
       pathFound = true;
     }
     if (
-      currentY < numRows - 1 &&
+      currentY < tileGrid.numRows - 1 &&
       tileArray[currentX][currentY + 1].label == endLabel
     ) {
       pathFound = true;
@@ -39,7 +39,7 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
         tileArray[currentX][currentY].status + "L";
     }
     if (
-      currentX < numColumns - 1 &&
+      currentX < tileGrid.numColumns - 1 &&
       tileArray[currentX + 1][currentY].status == "empty"
     ) {
       xQueue.push(currentX + 1);
@@ -56,7 +56,7 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
         tileArray[currentX][currentY].status + "U";
     }
     if (
-      currentY < numRows - 1 &&
+      currentY < tileGrid.numRows - 1 &&
       tileArray[currentX][currentY + 1].status == "empty"
     ) {
       xQueue.push(currentX);
@@ -80,8 +80,8 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
 }
 
 function findStartCoords(label) {
-  for (let i = 0; i < numColumns; i++) {
-    for (let j = 0; j < numRows; j++) {
+  for (let i = 0; i < tileGrid.numColumns; i++) {
+    for (let j = 0; j < tileGrid.numRows; j++) {
       if (tileArray[i][j].label == label) {
         var startCoords = [i, j];
         return startCoords;
