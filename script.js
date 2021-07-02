@@ -296,7 +296,6 @@ function getAllPermutations(string) {
 
 function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
   var currentCost = 0;
-  var content;
   var routeResults = [];
 
   Object.keys(routePermutationsHash).forEach(function (route) {
@@ -304,23 +303,19 @@ function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
       routeResults = [[route, edgeCostsHash[route]]];
       return routeResults;
     }
-
     for (let i = 0; i < route.length - 1; i++) {
-      var routeSubsection = route[i] + "" + route[i + 1];
-      var orderedRouteSubsection = routeSubsection.split("").sort().join("");
-      currentCost += edgeCostsHash[orderedRouteSubsection];
+      var routeSubsection = splitRouteIntoSubsection(route, i);
+      currentCost += edgeCostsHash[routeSubsection];
 
       if (i == route.length - 2) {
         for (let i = 0; i < 2; i++) {
+          var routeCopy = "" + route;
+          if (i == 1) {
+            routeCopy = routeCopy.split("").reverse().join("");
+          }
           var updatedCost =
             currentCost + edgeCostsHash[route[i * (route.length - 1)]];
-
-          var path = "" + route;
-          if (i == 1) {
-            path = path.split("").reverse().join("");
-          }
-          content = "Start->" + path;
-          routeResults.push([content, updatedCost]);
+          routeResults.push(["Start->" + routeCopy, updatedCost]);
         }
       }
     }
@@ -329,15 +324,11 @@ function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
   return routeResults;
 }
 
-function splitRouteIntoSubsections(route) {
-  var routeSubSections = [];
-
-  for (let i = 0; i < route.length; i++) {
-    var routeSubsection = route[i] + "" + route[i + 1];
-    var orderedRouteSubsection = routeSubsection.split("").sort().join("");
-  }
-
-  return routeSubSections;
+function splitRouteIntoSubsection(route, currentIndex) {
+  var unorderedRouteSubsection =
+    route[currentIndex] + "" + route[currentIndex + 1];
+  var routeSubsection = unorderedRouteSubsection.split("").sort().join("");
+  return routeSubsection;
 }
 
 function displayRouteResults(routeResults) {
