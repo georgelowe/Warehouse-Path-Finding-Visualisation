@@ -12,12 +12,20 @@ html {
   background-color: var(--background-colour);
 }
 
-p {
-  margin: 0rem;
+h1 {
+  text-align: left;
+  margin-top: 0rem;
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 h2 {
-  margin: 0.5rem 0 0.5rem 0;
+  margin: 0;
+}
+
+p {
+  margin: 0rem;
+  font-size: 1.2rem;
 }
 
 button {
@@ -32,15 +40,13 @@ button {
 
 .page-container {
   text-align: center;
-}
-
-#page-title {
-  color: var(--title-colour);
-  margin: 0;
+  width: 1032px;
+  margin: auto;
 }
 
 #canvas {
   background-color: white;
+  margin: auto;
 }
 
 .control-container {
@@ -75,7 +81,6 @@ button {
 }
 
 .results-container {
-  width: 1032px;
   margin: auto;
 }
 
@@ -96,4 +101,67 @@ button {
 }
 .optimal-route-div {
   background-color: var(--green);
+}
+
+.my-info-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin: 1rem 0rem 0rem 1rem;
+}
+
+i {
+  margin-right: 0.5rem;
+}
+
+.my-info {
+  font-size: 0.9rem;
+}
+
+a {
+  text-decoration: none;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 50%;
+
+  position: relative;
+}
+
+.modal-text {
+  margin-top: 1rem;
+}
+
+.top-right {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+#optimal-route-title {
+  display: none;
+}
+#edge-results-title {
+  display: none;
+}
+#route-permutations-title {
+  display: none;
 }

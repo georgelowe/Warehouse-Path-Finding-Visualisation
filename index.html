@@ -13,18 +13,45 @@
     <title>Warehouse Path Visualisation</title>
   </head>
   <body>
-    <div class="page-container">
-      <h1 id="page-title">Warehouse Path Visualisation</h1>
+    <div class="my-info-container">
+      <div class="column">
+        <a href="https://www.linkedin.com/in/george-lowe/">
+          <i
+            class="icon fab fa-linkedin"
+            style="font-size: 2rem; color: #0077b5"
+            aria-hidden="true"
+          ></i>
+        </a>
+        <a href="https://github.com/georgelowe">
+          <i
+            class="fab fa-github"
+            style="font-size: 2rem; color: #000000"
+            aria-hidden="true"
+          ></i>
+        </a>
+      </div>
+      <div class="column">
+        <p class="my-info">Created by George Lowe</p>
+      </div>
+      <div class="column top-right">
+        <button class="config-button" id="help-button">Instructions</button>
+      </div>
+    </div>
 
+    <!-- <p class="my-info">CREATED BY GEORGE LOWE</p> -->
+    <div class="page-container">
+      <!-- <h1 id="page-title">Warehouse Path Visualisation</h1> -->
+
+      <h1>Warehouse Path Visualisation</h1>
+
+      <canvas id="canvas" width="1032" height="457"></canvas>
       <div class="control-container">
         <button class="config-button" id="clear-button">Clear Board</button>
         <button class="config-button" id="set-pick-button">
           Set Pick Bays
         </button>
-        <button class="config-button" id="generate-map-button">
-          Generate Random Map
-        </button>
       </div>
+
       <div id="pick-count-message-container">
         There are currently 0 items selected to pick
       </div>
@@ -35,23 +62,57 @@
         </button>
       </div>
 
-      <canvas id="canvas" width="1032" height="457"></canvas>
-
       <div class="results-container">
+        <p id="optimal-route-title">Optimal Route:</p>
         <div id="optimal-route-container"></div>
-        <!-- <h2>Results</h2> -->
-
+        <p id="edge-results-title">Edges:</p>
         <div id="edges-container"></div>
+        <p id="route-permutations-title">Route Permutations:</p>
         <div id="routes-container"></div>
 
         <p id="results-message"></p>
       </div>
     </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div class="modal-text">
+          <h2>How to use this demo</h2>
+          <br />
+          <p>
+            The empty grid is an empty floorplan of a warehouse. <br /><br />
+            The <span style="color: #0b9f00">green square</span> represents the
+            start point of a pick route. <br /><br />
+            First, set squares to represent
+            <span style="color: #736ba6">racking.</span> <br /><br />
+            Then set
+            <span style="color: #f64900">pick bays</span>
+            to determine squares that must be routed to. <br /><br />
+            After clicking
+            <span style="color: #f64900">find optimal route</span>, all possible
+            edges will be <span style="color: #add8e6">highlighted</span>.
+            <br /><br />
+            Then, click the
+            <span style="color: #0b9f00">optimal route card</span> to visualise
+            the optimal pick route.
+          </p>
+          <br />
+          <p></p>
+        </div>
+      </div>
+    </div>
+
     <script src="tile.js"></script>
     <script src="grid.js"></script>
     <script src="Algorithms/visualiseEdge.js"></script>
     <script src="Algorithms/visualiseOptimalRoute.js"></script>
     <script src="Algorithms/unweighted.js"></script>
     <script src="script.js"></script>
+    <script
+      src="https://kit.fontawesome.com/2b4bfd313b.js"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>

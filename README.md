@@ -3,10 +3,12 @@
 Search algorithm visualisation project for warehouse pick routes.
 
 - [x] make results show as div cards
+- [] weighted algorithm implementation
 - [] add return value for 'explored nodes' so we can compare the unweighted and weighted algs
 - [] colour explored tiles?
 - [] animate the visualise function so that it shows it slowly drawing the route?
 - [] allow drawing instead of clicking
+- [] click between squares to draw either side when selecting racking?
 
 ## Created by:
 

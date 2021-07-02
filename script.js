@@ -2,12 +2,21 @@
 var clearButton = document.getElementById("clear-button");
 var setPickButton = document.getElementById("set-pick-button");
 var findOptimalRouteButton = document.getElementById("optimal-route-button");
+var helpButton = document.getElementById("help-button");
+var optimalRouteTitle = document.getElementById("optimal-route-title");
+var edgeResultsTitle = document.getElementById("edge-results-title");
+var routePermutationsTitle = document.getElementById(
+  "route-permutations-title"
+);
 
 // DOM Containers
 var configMessage = document.getElementById("pick-count-message-container");
 var optimalRouteContainer = document.getElementById("optimal-route-container");
 var edgeResultsContainer = document.getElementById("edges-container");
 var routeResultsContainer = document.getElementById("routes-container");
+
+// Modal
+var modal = document.getElementById("myModal");
 
 // Tile Grid Configuration
 var canvas = document.getElementById("canvas");
@@ -43,6 +52,7 @@ clearButton.addEventListener(
     updateConfigMessage();
     populateGrid();
     clearResults(optimalRouteContainer);
+    hideResultsTitles();
     clearResults(edgeResultsContainer);
     clearResults(routeResultsContainer);
     edgeDirections = {};
@@ -76,6 +86,7 @@ findOptimalRouteButton.addEventListener(
         routePermutationsHash,
         edgeCostsHashMap
       );
+      displayResultsTitles();
       displayRouteResults(routeResults);
 
       optimalRoute = calculateOptimalRoute(routeResults);
@@ -94,6 +105,20 @@ optimalRouteContainer.addEventListener(
   },
   false
 );
+
+helpButton.addEventListener(
+  "click",
+  function () {
+    modal.style.display = "block";
+  },
+  false
+);
+
+window.onclick = function (e) {
+  if (e.target == modal) {
+    modal.style.display = "none";
+  }
+};
 
 // Populate tileArray of tile objects
 for (let i = 0; i < tileGrid.numColumns; i++) {
@@ -384,4 +409,16 @@ function appendNewDiv(container, content, cost) {
   div.classList.add("results-div");
   div.innerHTML = `<p >${content}</p><p >${cost}</p>`;
   container.appendChild(div);
+}
+
+function displayResultsTitles() {
+  optimalRouteTitle.style.display = "block";
+  edgeResultsTitle.style.display = "block";
+  routePermutationsTitle.style.display = "block";
+}
+
+function hideResultsTitles() {
+  optimalRouteTitle.style.display = "none";
+  edgeResultsTitle.style.display = "none";
+  routePermutationsTitle.style.display = "none";
 }
