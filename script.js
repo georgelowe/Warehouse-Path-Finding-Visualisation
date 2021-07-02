@@ -32,6 +32,8 @@ var labelHashMap = {
   9: "I",
   10: "J",
 };
+var edgeDirections = {};
+var optimalRoute;
 
 // Event Listeners
 clearButton.addEventListener(
@@ -43,6 +45,7 @@ clearButton.addEventListener(
     clearResults(optimalRouteContainer);
     clearResults(edgeResultsContainer);
     clearResults(routeResultsContainer);
+    edgeDirections = {};
   },
   false
 );
@@ -75,11 +78,19 @@ findOptimalRouteButton.addEventListener(
       );
       displayRouteResults(routeResults);
 
-      var optimalRoute = calculateOptimalRoute(routeResults);
+      optimalRoute = calculateOptimalRoute(routeResults);
       displayOptimalRouteResult(optimalRoute);
     } else {
       updateConfigMessage();
     }
+  },
+  false
+);
+
+optimalRouteContainer.addEventListener(
+  "click",
+  function () {
+    visualiseOptimalRoute(optimalRoute[0]);
   },
   false
 );
@@ -140,7 +151,6 @@ function drawTile(tileXPos, tileYPos, tileColour) {
   canvasContext.closePath();
   canvasContext.fill();
 
-  // label tile if it is a pick item
   if (tileColour == "#f64900") {
     displayLabel(canvasContext, labelHashMap[pickCount], tileXPos, tileYPos);
   }
@@ -171,16 +181,16 @@ function updateConfigMessage() {
 canvas.onmousedown = selectTile;
 
 function selectTile(e) {
-  coords = locateMousePosition(e);
+  mouseCoords = locateMousePosition(e);
   for (let i = 0; i < tileGrid.numColumns; i++) {
     for (let j = 0; j < tileGrid.numRows; j++) {
       if (
-        i * (tileGrid.tileDimension + tileGrid.tileSpacing) < coords.x &&
-        coords.x <
+        i * (tileGrid.tileDimension + tileGrid.tileSpacing) < mouseCoords.x &&
+        mouseCoords.x <
           i * (tileGrid.tileDimension + tileGrid.tileSpacing) +
             tileGrid.tileDimension &&
-        j * (tileGrid.tileDimension + tileGrid.tileSpacing) < coords.y &&
-        coords.y <
+        j * (tileGrid.tileDimension + tileGrid.tileSpacing) < mouseCoords.y &&
+        mouseCoords.y <
           j * (tileGrid.tileDimension + tileGrid.tileSpacing) +
             tileGrid.tileDimension
       ) {
@@ -201,7 +211,6 @@ function selectTile(e) {
             pickCount++;
             updateConfigMessage();
           }
-
           drawTile(
             i * (tileGrid.tileDimension + tileGrid.tileSpacing),
             j * (tileGrid.tileDimension + tileGrid.tileSpacing),
@@ -214,10 +223,10 @@ function selectTile(e) {
 }
 
 function locateMousePosition(e) {
-  coords = {};
-  coords.x = e.pageX - canvas.offsetLeft;
-  coords.y = e.pageY - canvas.offsetTop;
-  return coords;
+  mouseCoords = {};
+  mouseCoords.x = e.pageX - canvas.offsetLeft;
+  mouseCoords.y = e.pageY - canvas.offsetTop;
+  return mouseCoords;
 }
 
 function calculateEdgeCosts() {
@@ -370,6 +379,7 @@ function appendNewDiv(container, content, cost) {
     div.classList.add("routes-div");
   } else if (container.id == "optimal-route-container") {
     div.classList.add("optimal-route-div");
+    div.id = "optimal-route-div";
   }
   div.classList.add("results-div");
   div.innerHTML = `<p >${content}</p><p >${cost}</p>`;

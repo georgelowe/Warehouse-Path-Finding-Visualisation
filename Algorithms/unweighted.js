@@ -72,10 +72,27 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
 
     var path = tileArray[currentX][currentY].status;
 
-    return visualise(path, startCoords);
+    storeEdgeDirections(path, startLabel, endLabel);
+
+    return visualiseEdge(path, startCoords);
   } else {
     configMessage.textContent = "There is no route to the picking item";
     return null;
+  }
+}
+
+function storeEdgeDirections(path, startLabel, endLabel) {
+  var edge = startLabel + "" + endLabel;
+  if (startLabel == "start") {
+    var edge = endLabel;
+    path = path.replace("start", "");
+  } else {
+    var edge = startLabel + "" + endLabel;
+    path = path.replace("pick", "");
+  }
+
+  if (!edgeDirections[edge]) {
+    edgeDirections[edge] = path;
   }
 }
 

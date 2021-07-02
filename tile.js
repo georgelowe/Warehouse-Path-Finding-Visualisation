@@ -48,7 +48,7 @@ class Tile {
     } else if (status == "pick") {
       this.colour = "#f64900";
     } else if (status == "x") {
-      this.colour = "#9DD999";
+      this.colour = "#ADD8E6";
     }
   }
 }

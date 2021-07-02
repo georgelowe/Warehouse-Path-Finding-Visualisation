@@ -1,4 +1,4 @@
-function visualise(path, startCoords) {
+function visualiseEdge(path, startCoords) {
   var pathLength = path.length;
   var currentX = startCoords[0];
   var currentY = startCoords[1];
