@@ -9,6 +9,8 @@ Search algorithm visualisation project for warehouse pick routes.
 - [] animate the visualise function so that it shows it slowly drawing the route?
 - [] allow drawing instead of clicking
 - [] click between squares to draw either side when selecting racking?
+- [] add div link to project on georgelowe.io
+- [] fix bug regarding steps being off slightly
 
 ## Created by:
 
