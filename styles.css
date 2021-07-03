@@ -4,7 +4,10 @@
   --button-text-colour: #ffffff;
   --info-text-colour: #ffffff;
   --button-colour: #f64900;
-  --green: #9dd999;
+  --optimal-route-colour: #6dc567;
+  --optimal-route-colour-hover: #8ad185;
+  --edge-colour: #7fc3cf;
+  --permutation-colour: #ffcc6c;
 }
 
 html {
@@ -89,16 +92,22 @@ button {
   color: var(--title-colour);
   font-family: inherit;
   font-size: 1rem;
+  position: relative;
+  color: var(--info-text-colour);
 }
 
 .edges-div {
-  background-color: lightblue;
+  background-color: var(--edge-colour);
 }
 .routes-div {
-  background-color: wheat;
+  background-color: var(--permutation-colour);
 }
 .optimal-route-div {
-  background-color: var(--green);
+  background-color: var(--optimal-route-colour);
+}
+.optimal-route-div:hover {
+  background-color: var(--optimal-route-colour-hover);
+  cursor: pointer;
 }
 
 .my-info-container {
@@ -163,4 +172,17 @@ a {
 }
 #route-permutations-title {
   display: none;
+}
+
+.visualise-optimal-route {
+  width: fit-content;
+  position: absolute;
+  color: var(--info-text-colour);
+}
+
+.cost-display {
+  width: fit-content;
+  position: absolute;
+  right: 1rem;
+  top: 0.5rem;
 }

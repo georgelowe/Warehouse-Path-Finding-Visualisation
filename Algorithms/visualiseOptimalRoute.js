@@ -82,7 +82,7 @@ function followDirections(startCoords, directions) {
       drawTile(
         currentX * (tileGrid.tileDimension + tileGrid.tileSpacing),
         currentY * (tileGrid.tileDimension + tileGrid.tileSpacing),
-        "#9DD999"
+        "#6dc567"
       );
     }
   }

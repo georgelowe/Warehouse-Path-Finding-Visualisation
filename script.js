@@ -402,14 +402,17 @@ function appendNewDiv(container, content, cost) {
   const div = document.createElement("div");
   if (container.id == "edges-container") {
     div.classList.add("edges-div");
+    div.innerHTML = `<p >${content}</p><p class="cost-display">Total Steps: ${cost}</p>`;
   } else if (container.id == "routes-container") {
     div.classList.add("routes-div");
+    div.innerHTML = `<p >${content}</p><p class="cost-display">Total Steps: ${cost}</p>`;
   } else if (container.id == "optimal-route-container") {
     div.classList.add("optimal-route-div");
     div.id = "optimal-route-div";
+    div.innerHTML = `<p class ="visualise-optimal-route">Click to visualise</p><p >${content}</p><p class="cost-display">Total Steps: ${cost}</p>`;
   }
   div.classList.add("results-div");
-  div.innerHTML = `<p >${content}</p><p >${cost}</p>`;
+
   container.appendChild(div);
 }
 
