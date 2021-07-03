@@ -78,10 +78,12 @@ function followDirections(startCoords, directions) {
       currentY += 1;
     }
 
-    drawTile(
-      currentX * (tileGrid.tileDimension + tileGrid.tileSpacing),
-      currentY * (tileGrid.tileDimension + tileGrid.tileSpacing),
-      "#9DD999"
-    );
+    if (tileArray[currentX][currentY].status != "pick") {
+      drawTile(
+        currentX * (tileGrid.tileDimension + tileGrid.tileSpacing),
+        currentY * (tileGrid.tileDimension + tileGrid.tileSpacing),
+        "#9DD999"
+      );
+    }
   }
 }

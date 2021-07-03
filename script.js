@@ -235,6 +235,8 @@ function selectTile(e) {
             tileArray[i][j].setLabel("" + labelHashMap[pickCount + 1]);
             pickCount++;
             updateConfigMessage();
+          } else {
+            break;
           }
           drawTile(
             i * (tileGrid.tileDimension + tileGrid.tileSpacing),

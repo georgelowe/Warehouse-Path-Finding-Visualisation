@@ -12,21 +12,33 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
 
     // Check that the desired "label" has been found
     if (currentX > 0 && tileArray[currentX - 1][currentY].label == endLabel) {
+      tileArray[currentX][currentY].status =
+        tileArray[currentX][currentY].status + "L";
+
       pathFound = true;
     }
     if (
       currentX < tileGrid.numColumns - 1 &&
       tileArray[currentX + 1][currentY].label == endLabel
     ) {
+      tileArray[currentX][currentY].status =
+        tileArray[currentX][currentY].status + "R";
+
       pathFound = true;
     }
     if (currentY > 0 && tileArray[currentX][currentY - 1].label == endLabel) {
+      tileArray[currentX][currentY].status =
+        tileArray[currentX][currentY].status + "U";
+
       pathFound = true;
     }
     if (
       currentY < tileGrid.numRows - 1 &&
       tileArray[currentX][currentY + 1].label == endLabel
     ) {
+      tileArray[currentX][currentY].status =
+        tileArray[currentX][currentY].status + "D";
+
       pathFound = true;
     }
 

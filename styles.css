@@ -120,6 +120,7 @@ i {
 
 a {
   text-decoration: none;
+  color: var(--title-colour);
 }
 
 .modal {
