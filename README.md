@@ -1,5 +1,7 @@
 # Warehouse Path Finding Visualisation
 
+<a href="https://georgelowe.io/Warehouse-Path-Finding-Visualisation/">View Live Project</a>
+
 Search algorithm visualisation project for warehouse pick routes.
 
 - [x] make results show as div cards
