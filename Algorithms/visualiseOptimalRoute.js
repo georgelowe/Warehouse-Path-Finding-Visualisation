@@ -1,6 +1,5 @@
 function visualiseOptimalRoute(optimalRoute) {
   var trimmedOptimalRoute = optimalRoute.replace("Start->", "");
-
   var pickCoords = {};
 
   for (let i = 1; i < trimmedOptimalRoute.length + 1; i++) {
@@ -11,17 +10,17 @@ function visualiseOptimalRoute(optimalRoute) {
     var goal = trimmedOptimalRoute[i];
     if (i == 0) {
       var start = findPickCoords("start");
-      var directions = edgeDirections[goal];
+      var directions = edgeDirectionsHash[goal];
     } else {
       var start = findPickCoords(trimmedOptimalRoute[i - 1]);
       var path = trimmedOptimalRoute[i - 1] + "" + trimmedOptimalRoute[i];
 
-      if (!edgeDirections[path]) {
+      if (!edgeDirectionsHash[path]) {
         var reversedPath = path.split("").reverse().join("");
-        var invertedDirections = edgeDirections[reversedPath];
+        var invertedDirections = edgeDirectionsHash[reversedPath];
         var directions = invertDirections(invertedDirections);
       } else {
-        var directions = edgeDirections[path];
+        var directions = edgeDirectionsHash[path];
       }
     }
     followDirections(start, directions);

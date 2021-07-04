@@ -10,7 +10,7 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
     currentX = xQueue.shift();
     currentY = yQueue.shift();
 
-    // Check that the desired "label" has been found
+    // Check that the target endLabel has been found
     if (currentX > 0 && tileArray[currentX - 1][currentY].label == endLabel) {
       tileArray[currentX][currentY].status =
         tileArray[currentX][currentY].status + "L";
@@ -23,13 +23,11 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
     ) {
       tileArray[currentX][currentY].status =
         tileArray[currentX][currentY].status + "R";
-
       pathFound = true;
     }
     if (currentY > 0 && tileArray[currentX][currentY - 1].label == endLabel) {
       tileArray[currentX][currentY].status =
         tileArray[currentX][currentY].status + "U";
-
       pathFound = true;
     }
     if (
@@ -38,11 +36,9 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
     ) {
       tileArray[currentX][currentY].status =
         tileArray[currentX][currentY].status + "D";
-
       pathFound = true;
     }
 
-    // Check and explore empty tiles
     if (currentX > 0 && tileArray[currentX - 1][currentY].status == "empty") {
       xQueue.push(currentX - 1);
       yQueue.push(currentY);
@@ -83,9 +79,7 @@ function solveUnweighted(tileArray, startLabel, endLabel) {
     configMessage.textContent = "Pick route found successfully";
 
     var path = tileArray[currentX][currentY].status;
-
     storeEdgeDirections(path, startLabel, endLabel);
-
     return visualiseEdge(path, startCoords);
   } else {
     configMessage.textContent = "There is no route to the picking item";
@@ -102,9 +96,8 @@ function storeEdgeDirections(path, startLabel, endLabel) {
     var edge = startLabel + "" + endLabel;
     path = path.replace("pick", "");
   }
-
-  if (!edgeDirections[edge]) {
-    edgeDirections[edge] = path;
+  if (!edgeDirectionsHash[edge]) {
+    edgeDirectionsHash[edge] = path;
   }
 }
 

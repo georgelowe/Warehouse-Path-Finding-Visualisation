@@ -1,8 +1,8 @@
 // DOM Buttons
 var clearButton = document.getElementById("clear-button");
-var setPickButton = document.getElementById("set-pick-button");
+var setPickBaysButton = document.getElementById("set-pick-button");
 var findOptimalRouteButton = document.getElementById("optimal-route-button");
-var helpButton = document.getElementById("help-button");
+var instructionsButton = document.getElementById("help-button");
 var optimalRouteTitle = document.getElementById("optimal-route-title");
 var edgeResultsTitle = document.getElementById("edge-results-title");
 var routePermutationsTitle = document.getElementById(
@@ -14,15 +14,12 @@ var configMessage = document.getElementById("pick-count-message-container");
 var optimalRouteContainer = document.getElementById("optimal-route-container");
 var edgeResultsContainer = document.getElementById("edges-container");
 var routeResultsContainer = document.getElementById("routes-container");
-
-// Modal
 var modal = document.getElementById("myModal");
 
 // Tile Grid Configuration
 var canvas = document.getElementById("canvas");
 canvasContext = canvas.getContext("2d");
 var tileArray = [];
-
 var tileGrid = new Grid(20, 45, 3, 20);
 
 // Selection Mode
@@ -41,33 +38,18 @@ var labelHashMap = {
   9: "I",
   10: "J",
 };
-var edgeDirections = {};
+var edgeDirectionsHash = {};
 var optimalRoute;
 
 // Event Listeners
-clearButton.addEventListener(
-  "click",
-  function () {
-    clearGrid();
-    updateConfigMessage();
-    populateGrid();
-    clearResults(optimalRouteContainer);
-    hideResultsTitles();
-    clearResults(edgeResultsContainer);
-    clearResults(routeResultsContainer);
-    edgeDirections = {};
-  },
-  false
-);
-
-setPickButton.addEventListener(
+setPickBaysButton.addEventListener(
   "click",
   function () {
     if (selectionMode == "rackSelect") {
-      setPickButton.textContent = "Set Racking";
+      setPickBaysButton.textContent = "Set Racking";
       selectionMode = "pickSelect";
-    } else if (selectionMode == "pickSelect") {
-      setPickButton.textContent = "Set Pick Bays";
+    } else {
+      setPickBaysButton.textContent = "Set Pick Bays";
       selectionMode = "rackSelect";
     }
   },
@@ -78,10 +60,10 @@ findOptimalRouteButton.addEventListener(
   "click",
   function () {
     if (pickCount > 0) {
-      edgeCostsHashMap = calculateEdgeCosts();
+      var edgeCostsHashMap = calculateAllEdgeCosts();
       displayEdgeResults(edgeCostsHashMap);
 
-      var routePermutationsHash = calculatePermutations(pickCount);
+      var routePermutationsHash = calculateValidRoutePermutations();
       var routeResults = calculateRouteCosts(
         routePermutationsHash,
         edgeCostsHashMap
@@ -92,7 +74,7 @@ findOptimalRouteButton.addEventListener(
       optimalRoute = calculateOptimalRoute(routeResults);
       displayOptimalRouteResult(optimalRoute);
     } else {
-      updateConfigMessage();
+      updatePickCountMessage();
     }
   },
   false
@@ -106,7 +88,22 @@ optimalRouteContainer.addEventListener(
   false
 );
 
-helpButton.addEventListener(
+clearButton.addEventListener(
+  "click",
+  function () {
+    clearGrid();
+    updatePickCountMessage();
+    populateCanvasWithTiles();
+    clearResults(optimalRouteContainer);
+    hideResultsTitles();
+    clearResults(edgeResultsContainer);
+    clearResults(routeResultsContainer);
+    edgeDirectionsHash = {};
+  },
+  false
+);
+
+instructionsButton.addEventListener(
   "click",
   function () {
     modal.style.display = "block";
@@ -131,7 +128,7 @@ for (let i = 0; i < tileGrid.numColumns; i++) {
   }
 }
 configDefaultTiles();
-populateGrid();
+populateCanvasWithTiles();
 
 function configDefaultTiles() {
   tileArray[0][0].setStatus("start");
@@ -140,8 +137,7 @@ function configDefaultTiles() {
   tileArray[tileGrid.numColumns - 1][tileGrid.numRows - 1].lock();
 }
 
-// Populate canvas with grid of tiles
-function populateGrid() {
+function populateCanvasWithTiles() {
   configDefaultTiles();
   for (let i = 0; i < tileGrid.numColumns; i++) {
     for (let j = 0; j < tileGrid.numRows; j++) {
@@ -193,7 +189,7 @@ function displayLabel(canvasContext, text, tileXPos, tileYPos) {
   );
 }
 
-function updateConfigMessage() {
+function updatePickCountMessage() {
   if (pickCount == 0) {
     configMessage.textContent =
       "You must select at least one item to be picked";
@@ -223,7 +219,7 @@ function selectTile(e) {
           if (selectionMode == "rackSelect") {
             if (tileArray[i][j].status == "pick") {
               pickCount--;
-              updateConfigMessage();
+              updatePickCountMessage();
             }
             tileArray[i][j].setStatus("racking");
           } else if (
@@ -234,7 +230,7 @@ function selectTile(e) {
             tileArray[i][j].setStatus("pick");
             tileArray[i][j].setLabel("" + labelHashMap[pickCount + 1]);
             pickCount++;
-            updateConfigMessage();
+            updatePickCountMessage();
           } else {
             break;
           }
@@ -256,9 +252,10 @@ function locateMousePosition(e) {
   return mouseCoords;
 }
 
-function calculateEdgeCosts() {
+function calculateAllEdgeCosts() {
   var edgeCostsHash = {};
 
+  // Edges from start to each pick bay
   for (let i = 1; i < pickCount + 1; i++) {
     if (!edgeCostsHash[labelHashMap[i]]) {
       edgeCostsHash[labelHashMap[i]] = solveUnweighted(
@@ -268,6 +265,7 @@ function calculateEdgeCosts() {
       );
     }
   }
+  // Edges between each pair of pick bays
   for (let i = 1; i < pickCount; i++) {
     for (let j = i + 1; j < pickCount + 1; j++) {
       let edge = labelHashMap[i] + "" + labelHashMap[j];
@@ -285,34 +283,30 @@ function calculateEdgeCosts() {
 
 function displayEdgeResults(resultsHash) {
   Object.keys(resultsHash).forEach(function (edge) {
-    var value = resultsHash[edge];
-    var content = edge;
+    var edgeCost = resultsHash[edge];
     if (edge.length == 1) {
-      content = "Start->" + content;
+      edge = "Start->" + edge;
     }
-    appendNewDiv(edgeResultsContainer, content, value);
+    appendNewDiv(edgeResultsContainer, edge, edgeCost);
   });
 }
 
-function calculatePermutations(pickCount) {
-  var string = "";
+// Valid: no reverse duplicates i.e. AB, BA
+function calculateValidRoutePermutations() {
+  var stringOfPickBays = "";
   var permutationsHash = {};
 
   for (let i = 1; i < pickCount + 1; i++) {
-    string += labelHashMap[i];
+    stringOfPickBays += labelHashMap[i];
   }
-  var permutations = getAllPermutations(string);
+  var allPermutations = getAllPermutations(stringOfPickBays);
 
-  for (let i = 0; i < permutations.length; i++) {
-    var currentPermutation = permutations[i];
-    var reversedCurrentPermutation = currentPermutation
-      .split("")
-      .reverse()
-      .join("");
-
+  for (let i = 0; i < allPermutations.length; i++) {
+    var currentPermutation = allPermutations[i];
+    // If currentPermutation isn't in the hash then check for its reverse
     if (
       !permutationsHash[currentPermutation] &&
-      !permutationsHash[reversedCurrentPermutation]
+      !permutationsHash[currentPermutation.split("").reverse().join("")]
     ) {
       permutationsHash[currentPermutation] = true;
     }
@@ -320,23 +314,24 @@ function calculatePermutations(pickCount) {
   return permutationsHash;
 }
 
-function getAllPermutations(string) {
-  var permutations = [];
+function getAllPermutations(stringOfPickBays) {
+  var allPermutations = [];
 
-  if (string.length == 1) {
-    permutations.push(string);
-    return permutations;
+  if (stringOfPickBays.length == 1) {
+    allPermutations.push(stringOfPickBays);
+    return allPermutations;
   }
-  for (var i = 0; i < string.length; i++) {
-    var firstChar = string[i];
-    var otherChar = string.substring(0, i) + string.substring(i + 1);
+  for (var i = 0; i < stringOfPickBays.length; i++) {
+    var firstChar = stringOfPickBays[i];
+    var otherChar =
+      stringOfPickBays.substring(0, i) + stringOfPickBays.substring(i + 1);
     var otherPermutations = getAllPermutations(otherChar);
 
     for (var j = 0; j < otherPermutations.length; j++) {
-      permutations.push(firstChar + otherPermutations[j]);
+      allPermutations.push(firstChar + otherPermutations[j]);
     }
   }
-  return permutations;
+  return allPermutations;
 }
 
 function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
@@ -353,11 +348,14 @@ function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
       currentCost += edgeCostsHash[routeSubsection];
 
       if (i == route.length - 2) {
+        // Save the route including distance from start and distance from end (reverse this route)
+        // e.g. ABC: Cost of Start->ABC and also Cost of Start->CBA
         for (let i = 0; i < 2; i++) {
           var routeCopy = "" + route;
           if (i == 1) {
             routeCopy = routeCopy.split("").reverse().join("");
           }
+          // i * (route.length - 1) gives us either 0 (index of first element) or route.length - 1 (index of last element)
           var updatedCost =
             currentCost + edgeCostsHash[route[i * (route.length - 1)]];
           routeResults.push(["Start->" + routeCopy, updatedCost]);
@@ -369,6 +367,9 @@ function calculateRouteCosts(routePermutationsHash, edgeCostsHash) {
   return routeResults;
 }
 
+// @param route e.g. ABCD
+// @param currentIndex e.g. 1
+// @return routesubSection e.g. BC
 function splitRouteIntoSubsection(route, currentIndex) {
   var unorderedRouteSubsection =
     route[currentIndex] + "" + route[currentIndex + 1];

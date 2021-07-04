@@ -2,17 +2,13 @@
 
 <a href="https://georgelowe.io/Warehouse-Path-Finding-Visualisation/">View Live Project</a>
 
-Search algorithm visualisation project for warehouse pick routes.
+Search algorithm visualisation project for warehouse pick routes📍
 
-- [x] make results show as div cards
-- [] weighted algorithm implementation
-- [] add return value for 'explored nodes' so we can compare the unweighted and weighted algs
-- [] colour explored tiles?
-- [] animate the visualise function so that it shows it slowly drawing the route?
-- [] allow drawing instead of clicking
-- [] click between squares to draw either side when selecting racking?
-- [] add div link to project on georgelowe.io
-- [x] fix bug regarding steps being off slightly
+This project allows users to design the layout of a grid based warehouse. The interative system calculates the fastest route around user determined pick bays and visualises optimal path and step count data.
+
+Stack used: Javascript, HTML, CSS
+
+## To Do:
 
 ## Created by:
 
